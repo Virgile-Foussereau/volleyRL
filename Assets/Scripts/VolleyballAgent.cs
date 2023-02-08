@@ -7,7 +7,7 @@ using Unity.MLAgents.Policies;
 public class VolleyballAgent : Agent
 {
     public GameObject area;
-    Rigidbody agentRb;
+    Rigidbody[] playerRbs;
     BehaviorParameters behaviorParameters;
     public Team teamId;
 
@@ -19,10 +19,10 @@ public class VolleyballAgent : Agent
     VolleyballEnvController envController;
 
     // Controls jump behavior
-    float jumpingTime;
-    Vector3 jumpTargetPos;
-    Vector3 jumpStartingPos;
-    float agentRot;
+    float[] jumpingTimes;
+    Vector3[] jumpTargetPoses;
+    Vector3[] jumpStartingPoses;
+    float[] playerRots;
 
     public Collider[] hitGroundColliders = new Collider[3];
     EnvironmentParameters resetParams;
@@ -31,23 +31,39 @@ public class VolleyballAgent : Agent
     {
         envController = area.GetComponent<VolleyballEnvController>();
     }
+    public Rigidbody[] GetPlayerRbs()
+    {
+        return playerRbs;
+    }
 
     public override void Initialize()
     {
         volleyballSettings = FindObjectOfType<VolleyballSettings>();
         behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
 
-        agentRb = GetComponent<Rigidbody>();
+        playerRbs = GetComponentsInChildren<Rigidbody>();
         ballRb = ball.GetComponent<Rigidbody>();
-        
+
+        jumpingTimes = new float[playerRbs.Length];
+        jumpTargetPoses = new Vector3[playerRbs.Length];
+        jumpStartingPoses = new Vector3[playerRbs.Length];
+        playerRots = new float[playerRbs.Length];
+
+
         // for symmetry between player side
         if (teamId == Team.Blue)
         {
-            agentRot = -1;
+            for (int i = 0; i < playerRbs.Length; i++)
+            {
+                playerRots[i] = -1;
+            }
         }
         else
         {
-            agentRot = 1;
+            for (int i = 0; i < playerRbs.Length; i++)
+            {
+                playerRots[i] = 1;
+            }
         }
 
         resetParams = Academy.Instance.EnvironmentParameters;
@@ -74,12 +90,12 @@ public class VolleyballAgent : Agent
     }
 
     /// <summary>
-    /// Check if agent is on the ground to enable/disable jumping
+    /// Check if player is on the ground to enable/disable jumping
     /// </summary>
-    public bool CheckIfGrounded()
+    public bool CheckIfGrounded(int playerIndex)
     {
         hitGroundColliders = new Collider[3];
-        var o = gameObject;
+        var o = playerRbs[playerIndex].gameObject;
         Physics.OverlapBoxNonAlloc(
             o.transform.localPosition + new Vector3(0, -0.05f, 0),
             new Vector3(0.95f / 2f, 0.5f, 0.95f / 2f),
@@ -88,7 +104,7 @@ public class VolleyballAgent : Agent
         var grounded = false;
         foreach (var col in hitGroundColliders)
         {
-            if (col != null && col.transform != transform &&
+            if (col != null && col.transform != playerRbs[playerIndex].transform &&
                 (col.CompareTag("walkableSurface") ||
                  col.CompareTag("purpleGoal") ||
                  col.CompareTag("blueGoal")))
@@ -101,9 +117,9 @@ public class VolleyballAgent : Agent
     }
 
     /// <summary>
-    /// Called when agent collides with the ball
+    /// Called when player collides with the ball
     /// </summary>
-    void OnCollisionEnter(Collision c)
+    void OnCollisionEnterChild(Collision c)
     {
         if (c.gameObject.CompareTag("ball"))
         {
@@ -114,100 +130,107 @@ public class VolleyballAgent : Agent
     /// <summary>
     /// Starts the jump sequence
     /// </summary>
-    public void Jump()
+    public void Jump(int playerIndex)
     {
-        jumpingTime = 0.2f;
-        jumpStartingPos = agentRb.position;
+        jumpingTimes[playerIndex] = 0.2f;
+        jumpStartingPoses[playerIndex] = playerRbs[playerIndex].position;
     }
 
     /// <summary>
-    /// Resolves the agent movement
+    /// Resolves the player movement
     /// </summary>
-    public void MoveAgent(ActionSegment<int> act)
+    public void MovePlayer(ActionSegment<int> act, int playerIndex)
     {
-        var grounded = CheckIfGrounded();
+        var grounded = CheckIfGrounded(playerIndex);
         var dirToGo = Vector3.zero;
         var rotateDir = Vector3.zero;
-        var dirToGoForwardAction = act[0];
-        var rotateDirAction = act[1];
-        var dirToGoSideAction = act[2];
-        var jumpAction = act[3];
+        var dirToGoForwardAction = act[4 * playerIndex];
+        var rotateDirAction = act[4 * playerIndex + 1];
+        var dirToGoSideAction = act[4 * playerIndex + 2];
+        var jumpAction = act[4 * playerIndex + 3];
 
         if (dirToGoForwardAction == 1)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.forward * 1f;
+            dirToGo = (grounded ? 1f : 0.5f) * playerRbs[playerIndex].transform.forward * 1f;
         else if (dirToGoForwardAction == 2)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.forward * volleyballSettings.speedReductionFactor * -1f;
+            dirToGo = (grounded ? 1f : 0.5f) * playerRbs[playerIndex].transform.forward * volleyballSettings.speedReductionFactor * -1f;
 
         if (rotateDirAction == 1)
-            rotateDir = transform.up * -1f;
+            rotateDir = playerRbs[playerIndex].transform.up * -1f;
         else if (rotateDirAction == 2)
-            rotateDir = transform.up * 1f;
+            rotateDir = playerRbs[playerIndex].transform.up * 1f;
 
         if (dirToGoSideAction == 1)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.right * volleyballSettings.speedReductionFactor * -1f;
+            dirToGo = (grounded ? 1f : 0.5f) * playerRbs[playerIndex].transform.right * volleyballSettings.speedReductionFactor * -1f;
         else if (dirToGoSideAction == 2)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.right * volleyballSettings.speedReductionFactor;
+            dirToGo = (grounded ? 1f : 0.5f) * playerRbs[playerIndex].transform.right * volleyballSettings.speedReductionFactor;
 
         if (jumpAction == 1)
-            if (((jumpingTime <= 0f) && grounded))
+            if (((jumpingTimes[playerIndex] <= 0f) && grounded))
             {
-                Jump();
+                Jump(playerIndex);
             }
 
-        transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
-        agentRb.AddForce(agentRot * dirToGo * volleyballSettings.agentRunSpeed,
+        playerRbs[playerIndex].transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
+        playerRbs[playerIndex].AddForce(playerRots[playerIndex] * dirToGo * volleyballSettings.playerRunSpeed,
             ForceMode.VelocityChange);
 
-        if (jumpingTime > 0f)
+        if (jumpingTimes[playerIndex] > 0f)
         {
-            jumpTargetPos =
-                new Vector3(agentRb.position.x,
-                    jumpStartingPos.y + volleyballSettings.agentJumpHeight,
-                    agentRb.position.z) + agentRot*dirToGo;
+            jumpTargetPoses[playerIndex] =
+                new Vector3(playerRbs[playerIndex].position.x,
+                    jumpStartingPoses[playerIndex].y + volleyballSettings.playerJumpHeight,
+                    playerRbs[playerIndex].position.z) + playerRots[playerIndex] * dirToGo;
 
-            MoveTowards(jumpTargetPos, agentRb, volleyballSettings.agentJumpVelocity,
-                volleyballSettings.agentJumpVelocityMaxChange);
+            MoveTowards(jumpTargetPoses[playerIndex], playerRbs[playerIndex], volleyballSettings.playerJumpVelocity,
+                volleyballSettings.playerJumpVelocityMaxChange);
         }
 
-        if (!(jumpingTime > 0f) && !grounded)
+        if (!(jumpingTimes[playerIndex] > 0f) && !grounded)
         {
-            agentRb.AddForce(
+            playerRbs[playerIndex].AddForce(
                 Vector3.down * volleyballSettings.fallingForce, ForceMode.Acceleration);
         }
 
-        if (jumpingTime > 0f)
+        if (jumpingTimes[playerIndex] > 0f)
         {
-            jumpingTime -= Time.fixedDeltaTime;
+            jumpingTimes[playerIndex] -= Time.fixedDeltaTime;
         }
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        MoveAgent(actionBuffers.DiscreteActions);
+        for (int i = 0; i < playerRbs.Length; i++)
+        {
+            MovePlayer(actionBuffers.DiscreteActions, i);
+        }
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
         // Agent rotation (1 float)
-        sensor.AddObservation(this.transform.rotation.y);
+        for (int i = 0; i < playerRots.Length; i++)
+        {
+            sensor.AddObservation(playerRbs[i].transform.rotation.y);
 
-        // Vector from agent to ball (direction to ball) (3 floats)
-        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x)*agentRot, 
-        (ballRb.transform.position.y - this.transform.position.y),
-        (ballRb.transform.position.z - this.transform.position.z)*agentRot);
 
-        sensor.AddObservation(toBall.normalized);
+            // Vector from agent to ball (direction to ball) (3 floats)
+            Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x) * playerRots[i],
+            (ballRb.transform.position.y - this.transform.position.y),
+            (ballRb.transform.position.z - this.transform.position.z) * playerRots[i]);
 
-        // Distance from the ball (1 float)
-        sensor.AddObservation(toBall.magnitude);
+            sensor.AddObservation(toBall.normalized);
 
-        // Agent velocity (3 floats)
-        sensor.AddObservation(agentRb.velocity);
+            // Distance from the ball (1 float)
+            sensor.AddObservation(toBall.magnitude);
 
-        // Ball velocity (3 floats)
-        sensor.AddObservation(ballRb.velocity.y);
-        sensor.AddObservation(ballRb.velocity.z*agentRot);
-        sensor.AddObservation(ballRb.velocity.x*agentRot);
+            // Agent velocity (3 floats)
+            sensor.AddObservation(playerRbs[i].velocity);
+
+            // Ball velocity (3 floats)
+            sensor.AddObservation(ballRb.velocity.y);
+            sensor.AddObservation(ballRb.velocity.z * playerRots[i]);
+            sensor.AddObservation(ballRb.velocity.x * playerRots[i]);
+        }
     }
 
     // For human controller

@@ -93,26 +93,18 @@ public class VolleyballEnvController : MonoBehaviour
                 if (lastHitter == Team.Blue)
                 {
                     // apply penalty to blue agent
-                    // blueAgent.AddReward(-0.1f);
-                    // purpleAgent.AddReward(0.1f);
-                    //compute angle between ballRb.velocity and the net
-                    Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
-                    float rmin = 0.3f;
-                    float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin/2 * (cos_angle - 1);
-                    blueAgent.AddReward(malus_outOfBound);
+                    Vector3 ballVelocity = ballRb.velocity;
+                    float angle = Vector3.Angle(ballVelocity, -Vector3.forward);
+                    float penalty = 0.25f * (Mathf.Cos(angle * Mathf.Deg2Rad / 2f) - 1);
+                    blueAgent.AddReward(penalty);
                 }
                 else if (lastHitter == Team.Purple)
                 {
                     // apply penalty to purple agent
-                    // purpleAgent.AddReward(-0.1f);
-                    // blueAgent.AddReward(0.1f);
-                    //compute angle between ballRb.velocity and the net
-                    Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
-                    float rmin = 0.3f;
-                    float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin/2 * (cos_angle - 1);
-                    purpleAgent.AddReward(malus_outOfBound);
+                    Vector3 ballVelocity = ballRb.velocity;
+                    float angle = Vector3.Angle(ballVelocity, Vector3.forward);
+                    float penalty = 0.25f * (Mathf.Cos(angle * Mathf.Deg2Rad / 2f) - 1);
+                    purpleAgent.AddReward(penalty);
                 }
 
                 // end episode
@@ -123,15 +115,27 @@ public class VolleyballEnvController : MonoBehaviour
 
             case Event.HitBlueGoal:
                 // blue wins
-                // blueAgent.AddReward(1f);
+                //blueAgent.AddReward(1f);
                 // purpleAgent.AddReward(-1f);
-                float distToBall_purple = (ballRb.transform.position - purpleAgentRb.transform.position).magnitude;
-                float malus_purple = -1 + Mathf.Exp(-0.5f * distToBall_purple);
-                purpleAgent.AddReward(malus_purple);
 
                 // turn floor blue
+                if (lastHitter == Team.Blue)
+                {
+                    blueAgent.AddReward(0.1f);
+                }
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
-
+                Rigidbody[] purplePlayerRbs = purpleAgent.GetPlayerRbs();
+                float distancePurple = Mathf.Infinity;
+                foreach (var rb in purplePlayerRbs)
+                {
+                    float distance = Vector3.Distance(rb.transform.position, ball.transform.position);
+                    if (distance < distancePurple)
+                    {
+                        distancePurple = distance;
+                    }
+                }
+                float rewardPurple = 2 * Mathf.Atan(1 / distancePurple) / Mathf.PI - 1;
+                blueAgent.AddReward(rewardPurple);
                 // end episode
                 blueAgent.EndEpisode();
                 purpleAgent.EndEpisode();
@@ -140,15 +144,27 @@ public class VolleyballEnvController : MonoBehaviour
 
             case Event.HitPurpleGoal:
                 // purple wins
-                // purpleAgent.AddReward(1f);
-                //malus decrease if agent is closer to the ball
-                float distToBall_blue = (ballRb.transform.position - blueAgentRb.transform.position).magnitude;
-                float malus_blue = -1 + Mathf.Exp(-0.5f * distToBall_blue);
-                blueAgent.AddReward(malus_blue);
+                //purpleAgent.AddReward(1f);
+                // blueAgent.AddReward(-1f);
 
                 // turn floor purple
+                if (lastHitter == Team.Purple)
+                {
+                    purpleAgent.AddReward(0.1f);
+                }
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
-
+                Rigidbody[] bluePlayerRbs = blueAgent.GetPlayerRbs();
+                float distanceBlue = Mathf.Infinity;
+                foreach (var rb in bluePlayerRbs)
+                {
+                    float distance = Vector3.Distance(rb.transform.position, ball.transform.position);
+                    if (distance < distanceBlue)
+                    {
+                        distanceBlue = distance;
+                    }
+                }
+                float rewardBlue = 2 * Mathf.Atan(1 / distanceBlue) / Mathf.PI - 1;
+                blueAgent.AddReward(rewardBlue);
                 // end episode
                 blueAgent.EndEpisode();
                 purpleAgent.EndEpisode();
@@ -159,6 +175,7 @@ public class VolleyballEnvController : MonoBehaviour
                 if (lastHitter == Team.Purple)
                 {
                     purpleAgent.AddReward(1);
+
                 }
                 break;
 
@@ -219,15 +236,19 @@ public class VolleyballEnvController : MonoBehaviour
         foreach (var agent in AgentsList)
         {
             // randomise starting positions and rotations
-            var randomPosX = Random.Range(-2f, 2f);
-            var randomPosZ = Random.Range(-2f, 2f);
-            var randomPosY = Random.Range(0.5f, 3.75f); // depends on jump height
-            var randomRot = Random.Range(-45f, 45f);
 
-            agent.transform.localPosition = new Vector3(randomPosX, randomPosY, randomPosZ);
-            agent.transform.eulerAngles = new Vector3(0, randomRot, 0);
 
-            agent.GetComponent<Rigidbody>().velocity = default(Vector3);
+            Rigidbody[] rigidbodies = agent.GetPlayerRbs();
+            foreach (var rb in rigidbodies)
+            {
+                var randomPosX = Random.Range(-2f, 2f);
+                var randomPosZ = Random.Range(-2f, 2f);
+                var randomPosY = Random.Range(0.5f, 3.75f); // depends on jump height
+                var randomRot = Random.Range(-45f, 45f);
+                rb.transform.localPosition = new Vector3(randomPosX, randomPosY, randomPosZ);
+                rb.transform.eulerAngles = new Vector3(0, randomRot, 0);
+                rb.velocity = default(Vector3);
+            }
         }
 
         // reset ball to starting conditions
