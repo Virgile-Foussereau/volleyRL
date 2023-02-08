@@ -15,6 +15,11 @@ public class VolleyballAgent : Agent
     public GameObject ball;
     Rigidbody ballRb;
 
+    // To get net's location for observations
+    public GameObject net;
+
+    Vector3 netPos;
+
     VolleyballSettings volleyballSettings;
     VolleyballEnvController envController;
 
@@ -39,6 +44,8 @@ public class VolleyballAgent : Agent
 
         agentRb = GetComponent<Rigidbody>();
         ballRb = ball.GetComponent<Rigidbody>();
+
+        netPos = net.transform.position;
 
         // for symmetry between player side
         if (teamId == Team.Blue)
@@ -191,18 +198,23 @@ public class VolleyballAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
 
+        // Agent position (vector3)
+
+        Vector3 agentPos = new Vector3((this.transform.position.x-netPos.x)*agentRot, this.transform.position.y-netPos.y, (this.transform.position.z-netPos.z)*agentRot);
+
+        sensor.AddObservation(agentPos);
+
         // Vector from agent to ball (direction to ball) (3 floats)
-        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x) * agentRot,
-        (ballRb.transform.position.y - this.transform.position.y),
-        (ballRb.transform.position.z - this.transform.position.z) * agentRot);
+        Vector3 ballPos = new Vector3((ballRb.transform.position.x - netPos.x) * agentRot,
+        (ballRb.transform.position.y - netPos.y),
+        (ballRb.transform.position.z - netPos.z) * agentRot);
 
-        sensor.AddObservation(toBall.normalized);
-
-        // Distance from the ball (1 float)
-        sensor.AddObservation(toBall.magnitude);
+        sensor.AddObservation(ballPos);
 
         // Agent velocity (3 floats)
-        sensor.AddObservation(agentRb.velocity);
+        sensor.AddObservation(agentRb.velocity.y);
+        sensor.AddObservation(agentRb.velocity.z * agentRot);
+        sensor.AddObservation(agentRb.velocity.x * agentRot);
 
         // Ball velocity (3 floats)
         sensor.AddObservation(ballRb.velocity.y);
