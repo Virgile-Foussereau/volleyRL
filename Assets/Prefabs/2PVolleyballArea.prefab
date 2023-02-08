@@ -560,7 +560,7 @@ MonoBehaviour:
   area: {fileID: 7954672815519958404}
   teamId: 1
   ball: {fileID: 1317026924745720295}
-  net: {fileID: 0}
+  net: {fileID: 7954672816082332773}
   hitGroundColliders:
   - {fileID: 0}
   - {fileID: 0}
@@ -769,7 +769,7 @@ MonoBehaviour:
   area: {fileID: 7954672815519958404}
   teamId: 0
   ball: {fileID: 1317026924745720295}
-  net: {fileID: 0}
+  net: {fileID: 7954672816082332773}
   hitGroundColliders:
   - {fileID: 0}
   - {fileID: 0}
@@ -1018,6 +1018,11 @@ PrefabInstance:
 --- !u!4 &7954672816082332772 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8576409450756380773, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
+  m_PrefabInstance: {fileID: 1828789324295451649}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7954672816082332773 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8576409450756380772, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
   m_PrefabInstance: {fileID: 1828789324295451649}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2598468887496675396
