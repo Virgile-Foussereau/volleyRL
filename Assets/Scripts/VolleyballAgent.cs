@@ -39,7 +39,7 @@ public class VolleyballAgent : Agent
 
         agentRb = GetComponent<Rigidbody>();
         ballRb = ball.GetComponent<Rigidbody>();
-        
+
         // for symmetry between player side
         if (teamId == Team.Blue)
         {
@@ -127,26 +127,23 @@ public class VolleyballAgent : Agent
     {
         var grounded = CheckIfGrounded();
         var dirToGo = Vector3.zero;
-        var rotateDir = Vector3.zero;
         var dirToGoForwardAction = act[0];
-        var rotateDirAction = act[1];
-        var dirToGoSideAction = act[2];
-        var jumpAction = act[3];
+        var dirToGoSideAction = act[1];
+        var jumpAction = act[2];
+
+        //Debug.Log(teamId + " " + transform.forward);
 
         if (dirToGoForwardAction == 1)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.forward * 1f;
+            dirToGo += (grounded ? 1f : 0.5f) * Vector3.forward * 1f;
         else if (dirToGoForwardAction == 2)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.forward * volleyballSettings.speedReductionFactor * -1f;
-
-        if (rotateDirAction == 1)
-            rotateDir = transform.up * -1f;
-        else if (rotateDirAction == 2)
-            rotateDir = transform.up * 1f;
-
+            dirToGo += (grounded ? 1f : 0.5f) * Vector3.forward * -1f;
         if (dirToGoSideAction == 1)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.right * volleyballSettings.speedReductionFactor * -1f;
+            dirToGo += (grounded ? 1f : 0.5f) * Vector3.right * -1f;
         else if (dirToGoSideAction == 2)
-            dirToGo = (grounded ? 1f : 0.5f) * transform.right * volleyballSettings.speedReductionFactor;
+            dirToGo += (grounded ? 1f : 0.5f) * Vector3.right;
+
+
+        dirToGo = agentRot * dirToGo.normalized;
 
         if (jumpAction == 1)
             if (((jumpingTime <= 0f) && grounded))
@@ -154,16 +151,21 @@ public class VolleyballAgent : Agent
                 Jump();
             }
 
-        transform.Rotate(rotateDir, Time.fixedDeltaTime * 200f);
-        agentRb.AddForce(agentRot * dirToGo * volleyballSettings.agentRunSpeed,
+        agentRb.AddForce(dirToGo * volleyballSettings.agentRunSpeed,
             ForceMode.VelocityChange);
+
+        if (dirToGo.magnitude != 0f)
+        {
+            agentRb.transform.rotation = Quaternion.LookRotation(dirToGo);
+        }
+
 
         if (jumpingTime > 0f)
         {
             jumpTargetPos =
                 new Vector3(agentRb.position.x,
                     jumpStartingPos.y + volleyballSettings.agentJumpHeight,
-                    agentRb.position.z) + agentRot*dirToGo;
+                    agentRb.position.z) + dirToGo;
 
             MoveTowards(jumpTargetPos, agentRb, volleyballSettings.agentJumpVelocity,
                 volleyballSettings.agentJumpVelocityMaxChange);
@@ -188,13 +190,11 @@ public class VolleyballAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        // Agent rotation (1 float)
-        sensor.AddObservation(this.transform.rotation.y);
 
         // Vector from agent to ball (direction to ball) (3 floats)
-        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x)*agentRot, 
+        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x) * agentRot,
         (ballRb.transform.position.y - this.transform.position.y),
-        (ballRb.transform.position.z - this.transform.position.z)*agentRot);
+        (ballRb.transform.position.z - this.transform.position.z) * agentRot);
 
         sensor.AddObservation(toBall.normalized);
 
@@ -206,28 +206,18 @@ public class VolleyballAgent : Agent
 
         // Ball velocity (3 floats)
         sensor.AddObservation(ballRb.velocity.y);
-        sensor.AddObservation(ballRb.velocity.z*agentRot);
-        sensor.AddObservation(ballRb.velocity.x*agentRot);
+        sensor.AddObservation(ballRb.velocity.z * agentRot);
+        sensor.AddObservation(ballRb.velocity.x * agentRot);
     }
 
     // For human controller
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var discreteActionsOut = actionsOut.DiscreteActions;
-        if (Input.GetKey(KeyCode.D))
-        {
-            // rotate right
-            discreteActionsOut[1] = 2;
-        }
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             // forward
             discreteActionsOut[0] = 1;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            // rotate left
-            discreteActionsOut[1] = 1;
         }
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
@@ -237,13 +227,13 @@ public class VolleyballAgent : Agent
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             // move left
-            discreteActionsOut[2] = 1;
+            discreteActionsOut[1] = 1;
         }
         if (Input.GetKey(KeyCode.RightArrow))
         {
             // move right
-            discreteActionsOut[2] = 2;
+            discreteActionsOut[1] = 2;
         }
-        discreteActionsOut[3] = Input.GetKey(KeyCode.Space) ? 1 : 0;
+        discreteActionsOut[2] = Input.GetKey(KeyCode.Space) ? 1 : 0;
     }
 }
