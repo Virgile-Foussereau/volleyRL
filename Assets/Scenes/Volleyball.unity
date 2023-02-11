@@ -590,10 +590,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7954672815851726557, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_BehaviorType
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
 --- !u!1001 &405634082
@@ -606,10 +602,6 @@ PrefabInstance:
     - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_Name
       value: 2PVolleyballArea (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958407, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_RootOrder
@@ -1193,8 +1185,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9f32f376250464ebe66862b63b0e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agentRange: 1
+  ballTouchSpeed: 30
+  ballSmashSpeed: 50
   agentRunSpeed: 1.5
-  agentJumpHeight: 2.75
+  agentJumpHeight: 5
   agentJumpVelocity: 400
   agentJumpVelocityMaxChange: 10
   speedReductionFactor: 0.7
@@ -1210,7 +1205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997631133}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4655452, y: 3.7463722, z: 7.9939356}
+  m_LocalPosition: {x: 1.4655452, y: 10.04, z: 7.9939356}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

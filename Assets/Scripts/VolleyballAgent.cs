@@ -40,7 +40,8 @@ public class VolleyballAgent : Agent
     public override void Initialize()
     {
         volleyballSettings = FindObjectOfType<VolleyballSettings>();
-        behaviorParameters = gameObject.GetComponent<BehaviorParameters>();
+        behaviorParameters = GetComponent<BehaviorParameters>();
+
 
         agentRb = GetComponent<Rigidbody>();
         ballRb = ball.GetComponent<Rigidbody>();
@@ -79,6 +80,30 @@ public class VolleyballAgent : Agent
                 rb.velocity, velocityTarget, maxVel);
         }
     }
+    void Touch()
+    {
+        //calculate vector from agent to ball
+        Vector3 agentToBall = ball.transform.position - transform.position;
+
+        if (agentToBall.magnitude < volleyballSettings.agentRange)
+        {
+            AddReward(0.1f);
+            ballRb.velocity = agentToBall.normalized * volleyballSettings.ballTouchSpeed;
+        }
+    }
+
+    void Smash()
+    {
+        //calculate vector from agent to ball
+        Vector3 agentToBall = ball.transform.position - transform.position;
+        if (agentToBall.magnitude < volleyballSettings.agentRange)
+        {
+            AddReward(0.2f);
+            Vector3 planeNormal = Vector3.Cross(Vector3.up, agentToBall.normalized);
+            Vector3 smashDir = Vector3.Cross(planeNormal, Vector3.up);
+            ballRb.velocity = smashDir * volleyballSettings.ballSmashSpeed;
+        }
+    }
 
     /// <summary>
     /// Check if agent is on the ground to enable/disable jumping
@@ -86,12 +111,11 @@ public class VolleyballAgent : Agent
     public bool CheckIfGrounded()
     {
         hitGroundColliders = new Collider[3];
-        var o = gameObject;
         Physics.OverlapBoxNonAlloc(
-            o.transform.localPosition + new Vector3(0, -0.05f, 0),
+            transform.localPosition + new Vector3(0, -0.05f, 0),
             new Vector3(0.95f / 2f, 0.5f, 0.95f / 2f),
             hitGroundColliders,
-            o.transform.rotation);
+            transform.rotation);
         var grounded = false;
         foreach (var col in hitGroundColliders)
         {
@@ -123,6 +147,7 @@ public class VolleyballAgent : Agent
     /// </summary>
     public void Jump()
     {
+        AddReward(-0.1f);
         jumpingTime = 0.2f;
         jumpStartingPos = agentRb.position;
     }
@@ -137,6 +162,7 @@ public class VolleyballAgent : Agent
         var dirToGoForwardAction = act[0];
         var dirToGoSideAction = act[1];
         var jumpAction = act[2];
+        var touchAction = act[3];
 
         //Debug.Log(teamId + " " + transform.forward);
 
@@ -161,6 +187,7 @@ public class VolleyballAgent : Agent
         agentRb.AddForce(dirToGo * volleyballSettings.agentRunSpeed,
             ForceMode.VelocityChange);
 
+        // Rotate the agent towards the direction it is moving
         if (dirToGo.magnitude != 0f)
         {
             agentRb.transform.rotation = Quaternion.LookRotation(dirToGo);
@@ -188,6 +215,19 @@ public class VolleyballAgent : Agent
         {
             jumpingTime -= Time.fixedDeltaTime;
         }
+
+        if (touchAction == 1)
+        {
+            if (grounded)
+            {
+                Touch();
+            }
+            else
+            {
+                Smash();
+            }
+        }
+
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
@@ -200,11 +240,11 @@ public class VolleyballAgent : Agent
 
         // Agent position (vector3)
 
-        Vector3 agentPos = new Vector3((this.transform.position.x-netPos.x)*agentRot, this.transform.position.y-netPos.y, (this.transform.position.z-netPos.z)*agentRot);
+        Vector3 agentPos = new Vector3((this.transform.position.x - netPos.x) * agentRot, this.transform.position.y - netPos.y, (this.transform.position.z - netPos.z) * agentRot);
 
         sensor.AddObservation(agentPos);
 
-        // Vector from agent to ball (direction to ball) (3 floats)
+        // Ball position (vector3)  
         Vector3 ballPos = new Vector3((ballRb.transform.position.x - netPos.x) * agentRot,
         (ballRb.transform.position.y - netPos.y),
         (ballRb.transform.position.z - netPos.z) * agentRot);
@@ -220,6 +260,10 @@ public class VolleyballAgent : Agent
         sensor.AddObservation(ballRb.velocity.y);
         sensor.AddObservation(ballRb.velocity.z * agentRot);
         sensor.AddObservation(ballRb.velocity.x * agentRot);
+
+        Vector3 toBall = ballPos - agentPos;
+        sensor.AddObservation(toBall.normalized);
+        sensor.AddObservation(toBall.magnitude);
     }
 
     // For human controller

@@ -99,7 +99,7 @@ public class VolleyballEnvController : MonoBehaviour
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
                     float rmin = 0.3f;
                     float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin/2 * (cos_angle - 1);
+                    float malus_outOfBound = rmin / 2 * (cos_angle - 1);
                     blueAgent.AddReward(malus_outOfBound);
                 }
                 else if (lastHitter == Team.Purple)
@@ -111,7 +111,7 @@ public class VolleyballEnvController : MonoBehaviour
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
                     float rmin = 0.3f;
                     float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin/2 * (cos_angle - 1);
+                    float malus_outOfBound = rmin / 2 * (cos_angle - 1);
                     purpleAgent.AddReward(malus_outOfBound);
                 }
 
@@ -126,7 +126,7 @@ public class VolleyballEnvController : MonoBehaviour
                 // blueAgent.AddReward(1f);
                 // purpleAgent.AddReward(-1f);
                 float distToBall_purple = (ballRb.transform.position - purpleAgentRb.transform.position).magnitude;
-                float malus_purple = -1 + Mathf.Exp(-0.5f * distToBall_purple);
+                float malus_purple = -1.4f + Mathf.Exp(-0.5f * distToBall_purple);
                 purpleAgent.AddReward(malus_purple);
 
                 // turn floor blue
@@ -143,7 +143,7 @@ public class VolleyballEnvController : MonoBehaviour
                 // purpleAgent.AddReward(1f);
                 //malus decrease if agent is closer to the ball
                 float distToBall_blue = (ballRb.transform.position - blueAgentRb.transform.position).magnitude;
-                float malus_blue = -1 + Mathf.Exp(-0.5f * distToBall_blue);
+                float malus_blue = -1.4f + Mathf.Exp(-0.5f * distToBall_blue);
                 blueAgent.AddReward(malus_blue);
 
                 // turn floor purple
@@ -159,6 +159,7 @@ public class VolleyballEnvController : MonoBehaviour
                 if (lastHitter == Team.Purple)
                 {
                     purpleAgent.AddReward(1);
+                    blueAgent.AddReward(-1);
                 }
                 break;
 
@@ -166,6 +167,7 @@ public class VolleyballEnvController : MonoBehaviour
                 if (lastHitter == Team.Blue)
                 {
                     blueAgent.AddReward(1);
+                    purpleAgent.AddReward(-1);
                 }
                 break;
         }

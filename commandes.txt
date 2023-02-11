@@ -1,0 +1,2 @@
+mlagents-learn config/Volleyball.yaml --run-id=test --time-scale=1
+tensorboard --logdir results

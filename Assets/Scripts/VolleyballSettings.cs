@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class VolleyballSettings : MonoBehaviour
 {
+    public float agentRange = 1.2f;
+    public float ballTouchSpeed = 30f;
+    public float ballSmashSpeed = 50f;
     public float agentRunSpeed = 1.5f;
-    public float agentJumpHeight = 2.75f;
+    public float agentJumpHeight = 5f;
     public float agentJumpVelocity = 777;
     public float agentJumpVelocityMaxChange = 10;
 
