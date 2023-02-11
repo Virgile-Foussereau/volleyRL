@@ -60,9 +60,9 @@ public class VolleyballEnvController : MonoBehaviour
 
     Renderer purpleGoalRenderer;
 
-    Team lastHitter;
+    public Team lastHitter;
 
-    Role lastRoleToHit;
+    public Role lastRoleToHit;
     
 
     private int resetTimer;
@@ -192,7 +192,6 @@ public class VolleyballEnvController : MonoBehaviour
                     float malus_purple2_bad_set = -1 + Mathf.Exp(-0.5f * distToBall_purple1);
                     purpleAgent2.AddReward(malus_purple2_bad_set);
 
-                    float distToBall_purple1 = (ballRb.transform.position - purpleAgent1Rb.transform.position).magnitude;
                     float malus_purple1 = -1 + Mathf.Exp(-0.5f * distToBall_purple1);
                     purpleAgent1.AddReward(malus_purple1);
                 }
@@ -229,7 +228,6 @@ public class VolleyballEnvController : MonoBehaviour
                     float malus_blue2_bad_set = -1 + Mathf.Exp(-0.5f * distToBall_blue1);
                     blueAgent2.AddReward(malus_blue2_bad_set);
 
-                    float distToBall_blue1 = (ballRb.transform.position - blueAgent1Rb.transform.position).magnitude;
                     float malus_blue1 = -1 + Mathf.Exp(-0.5f * distToBall_blue1);
                     blueAgent1.AddReward(malus_blue1);
                 }
