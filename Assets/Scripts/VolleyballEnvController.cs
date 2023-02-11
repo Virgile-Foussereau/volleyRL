@@ -24,14 +24,18 @@ public class VolleyballEnvController : MonoBehaviour
 
     VolleyballSettings volleyballSettings;
 
-    public VolleyballAgent blueAgent;
-    public VolleyballAgent purpleAgent;
+    public VolleyballAgent blueAgent1;
+    public VolleyballAgent blueAgent2;
+    public VolleyballAgent purpleAgent1;
+    public VolleyballAgent purpleAgent2;
 
     public List<VolleyballAgent> AgentsList = new List<VolleyballAgent>();
     List<Renderer> RenderersList = new List<Renderer>();
 
-    Rigidbody blueAgentRb;
-    Rigidbody purpleAgentRb;
+    Rigidbody blueAgentRb1;
+    Rigidbody blueAgentRb2;
+    Rigidbody purpleAgentRb1;
+    Rigidbody purpleAgentRb2;
 
     public GameObject ball;
     Rigidbody ballRb;
@@ -52,8 +56,11 @@ public class VolleyballEnvController : MonoBehaviour
     {
 
         // Used to control agent & ball starting positions
-        blueAgentRb = blueAgent.GetComponent<Rigidbody>();
-        purpleAgentRb = purpleAgent.GetComponent<Rigidbody>();
+        blueAgentRb1 = blueAgent1.GetComponent<Rigidbody>();
+        blueAgentRb2 = blueAgent2.GetComponent<Rigidbody>();
+        purpleAgentRb1 = purpleAgent1.GetComponent<Rigidbody>();
+        purpleAgentRb2 = purpleAgent2.GetComponent<Rigidbody>();
+
         ballRb = ball.GetComponent<Rigidbody>();
 
         // Starting ball spawn side
@@ -100,7 +107,8 @@ public class VolleyballEnvController : MonoBehaviour
                     float rmin = 0.3f;
                     float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
                     float malus_outOfBound = rmin / 2 * (cos_angle - 1);
-                    blueAgent.AddReward(malus_outOfBound);
+                    blueAgent1.AddReward(malus_outOfBound);
+                    blueAgent2.AddReward(malus_outOfBound);
                 }
                 else if (lastHitter == Team.Purple)
                 {
@@ -112,12 +120,16 @@ public class VolleyballEnvController : MonoBehaviour
                     float rmin = 0.3f;
                     float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
                     float malus_outOfBound = rmin / 2 * (cos_angle - 1);
-                    purpleAgent.AddReward(malus_outOfBound);
+                    purpleAgent1.AddReward(malus_outOfBound);
+                    purpleAgent2.AddReward(malus_outOfBound);
                 }
 
                 // end episode
-                blueAgent.EndEpisode();
-                purpleAgent.EndEpisode();
+                blueAgent1.EndEpisode();
+                blueAgent2.EndEpisode();
+
+                purpleAgent1.EndEpisode();
+                purpleAgent2.EndEpisode();
                 ResetScene();
                 break;
 
@@ -125,16 +137,19 @@ public class VolleyballEnvController : MonoBehaviour
                 // blue wins
                 // blueAgent.AddReward(1f);
                 // purpleAgent.AddReward(-1f);
-                float distToBall_purple = (ballRb.transform.position - purpleAgentRb.transform.position).magnitude;
+                float distToBall_purple = Mathf.Min((ballRb.transform.position - purpleAgentRb1.transform.position).magnitude, (ballRb.transform.position - purpleAgentRb2.transform.position).magnitude);
                 float malus_purple = -1.4f + Mathf.Exp(-0.5f * distToBall_purple);
-                purpleAgent.AddReward(malus_purple);
+                purpleAgent1.AddReward(malus_purple);
+                purpleAgent2.AddReward(malus_purple);
 
                 // turn floor blue
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
 
                 // end episode
-                blueAgent.EndEpisode();
-                purpleAgent.EndEpisode();
+                blueAgent1.EndEpisode();
+                blueAgent2.EndEpisode();
+                purpleAgent1.EndEpisode();
+                purpleAgent2.EndEpisode();
                 ResetScene();
                 break;
 
@@ -142,32 +157,38 @@ public class VolleyballEnvController : MonoBehaviour
                 // purple wins
                 // purpleAgent.AddReward(1f);
                 //malus decrease if agent is closer to the ball
-                float distToBall_blue = (ballRb.transform.position - blueAgentRb.transform.position).magnitude;
+                float distToBall_blue = Mathf.Min((ballRb.transform.position - blueAgentRb1.transform.position).magnitude, (ballRb.transform.position - blueAgentRb2.transform.position).magnitude);
                 float malus_blue = -1.4f + Mathf.Exp(-0.5f * distToBall_blue);
-                blueAgent.AddReward(malus_blue);
+                blueAgent1.AddReward(malus_blue);
+                blueAgent2.AddReward(malus_blue);
 
                 // turn floor purple
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
 
                 // end episode
-                blueAgent.EndEpisode();
-                purpleAgent.EndEpisode();
+                blueAgent1.EndEpisode();
+                blueAgent2.EndEpisode();
+                purpleAgent1.EndEpisode();
+                purpleAgent2.EndEpisode();
+
                 ResetScene();
                 break;
 
             case Event.HitIntoBlueArea:
                 if (lastHitter == Team.Purple)
                 {
-                    purpleAgent.AddReward(1);
-                    blueAgent.AddReward(-1);
+                    purpleAgent1.AddReward(1);
+                    purpleAgent2.AddReward(1);
+                    //blueAgent.AddReward(-1);
                 }
                 break;
 
             case Event.HitIntoPurpleArea:
                 if (lastHitter == Team.Blue)
                 {
-                    blueAgent.AddReward(1);
-                    purpleAgent.AddReward(-1);
+                    blueAgent1.AddReward(1);
+                    blueAgent2.AddReward(1);
+                    //purpleAgent.AddReward(-1);
                 }
                 break;
         }
@@ -203,8 +224,10 @@ public class VolleyballEnvController : MonoBehaviour
         resetTimer += 1;
         if (resetTimer >= MaxEnvironmentSteps && MaxEnvironmentSteps > 0)
         {
-            blueAgent.EpisodeInterrupted();
-            purpleAgent.EpisodeInterrupted();
+            blueAgent1.EpisodeInterrupted();
+            blueAgent2.EpisodeInterrupted();
+            purpleAgent1.EpisodeInterrupted();
+            purpleAgent2.EpisodeInterrupted();
             ResetScene();
         }
     }

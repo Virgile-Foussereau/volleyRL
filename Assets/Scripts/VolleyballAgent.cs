@@ -8,6 +8,7 @@ public class VolleyballAgent : Agent
 {
     public GameObject area;
     Rigidbody agentRb;
+    public GameObject teamMate;
     BehaviorParameters behaviorParameters;
     public Team teamId;
 
@@ -87,7 +88,7 @@ public class VolleyballAgent : Agent
 
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
-            AddReward(0.1f);
+            //AddReward(0.1f);
             ballRb.velocity = agentToBall.normalized * volleyballSettings.ballTouchSpeed;
         }
     }
@@ -98,7 +99,7 @@ public class VolleyballAgent : Agent
         Vector3 agentToBall = ball.transform.position - transform.position;
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
-            AddReward(0.2f);
+            //AddReward(0.2f);
             Vector3 planeNormal = Vector3.Cross(Vector3.up, agentToBall.normalized);
             Vector3 smashDir = Vector3.Cross(planeNormal, Vector3.up);
             ballRb.velocity = smashDir * volleyballSettings.ballSmashSpeed;
@@ -251,10 +252,11 @@ public class VolleyballAgent : Agent
 
         sensor.AddObservation(ballPos);
 
-        // Agent velocity (3 floats)
-        sensor.AddObservation(agentRb.velocity.y);
-        sensor.AddObservation(agentRb.velocity.z * agentRot);
-        sensor.AddObservation(agentRb.velocity.x * agentRot);
+        // teammate position (vector3)
+        Vector3 teammatePos = new Vector3((teamMate.transform.position.x - netPos.x) * agentRot, teamMate.transform.position.y - netPos.y, (teamMate.transform.position.z - netPos.z) * agentRot);
+
+        sensor.AddObservation(teammatePos);
+
 
         // Ball velocity (3 floats)
         sensor.AddObservation(ballRb.velocity.y);
