@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class VolleyballSettings : MonoBehaviour
 {
+    public float mobilityReductionTime = 0.5f;
+    public float mobilityReductionFactor = 0.7f;
+    public float smashCD = 0.5f;
     public float agentRange = 1.2f;
     public float ballTouchSpeed = 30f;
     public float ballSmashSpeed = 50f;

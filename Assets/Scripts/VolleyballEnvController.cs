@@ -92,6 +92,56 @@ public class VolleyballEnvController : MonoBehaviour
     /// Example reward functions are shown below.
     /// To enable Self-Play: Set either Purple or Blue Agent's Team ID to 1.
     /// </summary>
+    void ApplyDistanceToBallMalus(VolleyballAgent[] agents)
+    {
+        float distanceToBall = Mathf.Infinity;
+        foreach (VolleyballAgent agent in agents)
+        {
+            float dist = Vector3.Distance(agent.transform.position, ball.transform.position);
+            if (dist < distanceToBall)
+            {
+                distanceToBall = dist;
+            }
+        }
+        float malus = -1.4f + Mathf.Exp(-0.5f * distanceToBall);
+        foreach (VolleyballAgent agent in agents)
+        {
+            agent.AddReward(malus);
+        }
+    }
+
+    void ApplyOutOfBoundsMalus(VolleyballAgent[] agents)
+    {
+        Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
+        float rmin = 0.3f;
+        float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
+        float malus_outOfBound = rmin / 2 * (cos_angle - 1);
+        foreach (VolleyballAgent agent in agents)
+        {
+            agent.AddReward(malus_outOfBound);
+        }
+    }
+
+    void ApplyTeamMateDistanceMalus(VolleyballAgent[] agents)
+    {
+        foreach (VolleyballAgent agent in agents)
+        {
+            float distanceToClosestTeammate = Mathf.Infinity;
+            foreach (VolleyballAgent teammate in agents)
+            {
+                if (teammate != agent)
+                {
+                    float dist = Vector3.Distance(agent.transform.position, teammate.transform.position);
+                    if (dist < distanceToClosestTeammate)
+                    {
+                        distanceToClosestTeammate = dist;
+                    }
+                }
+            }
+            float malus = -Mathf.Exp(-distanceToClosestTeammate);
+            agent.AddReward(malus);
+        }
+    }
     public void ResolveEvent(Event triggerEvent)
     {
         switch (triggerEvent)
@@ -99,29 +149,11 @@ public class VolleyballEnvController : MonoBehaviour
             case Event.HitOutOfBounds:
                 if (lastHitter == Team.Blue)
                 {
-                    // apply penalty to blue agent
-                    // blueAgent.AddReward(-0.1f);
-                    // purpleAgent.AddReward(0.1f);
-                    //compute angle between ballRb.velocity and the net
-                    Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
-                    float rmin = 0.3f;
-                    float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin / 2 * (cos_angle - 1);
-                    blueAgent1.AddReward(malus_outOfBound);
-                    blueAgent2.AddReward(malus_outOfBound);
+                    ApplyOutOfBoundsMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
                 }
                 else if (lastHitter == Team.Purple)
                 {
-                    // apply penalty to purple agent
-                    // purpleAgent.AddReward(-0.1f);
-                    // blueAgent.AddReward(0.1f);
-                    //compute angle between ballRb.velocity and the net
-                    Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
-                    float rmin = 0.3f;
-                    float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin / 2 * (cos_angle - 1);
-                    purpleAgent1.AddReward(malus_outOfBound);
-                    purpleAgent2.AddReward(malus_outOfBound);
+                    ApplyOutOfBoundsMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
                 }
 
                 // end episode
@@ -135,13 +167,8 @@ public class VolleyballEnvController : MonoBehaviour
 
             case Event.HitBlueGoal:
                 // blue wins
-                // blueAgent.AddReward(1f);
-                // purpleAgent.AddReward(-1f);
-                float distToBall_purple = Mathf.Min((ballRb.transform.position - purpleAgentRb1.transform.position).magnitude, (ballRb.transform.position - purpleAgentRb2.transform.position).magnitude);
-                float malus_purple = -1.4f + Mathf.Exp(-0.5f * distToBall_purple);
-                purpleAgent1.AddReward(malus_purple);
-                purpleAgent2.AddReward(malus_purple);
-
+                ApplyDistanceToBallMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
+                ApplyTeamMateDistanceMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
                 // turn floor blue
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
 
@@ -154,13 +181,8 @@ public class VolleyballEnvController : MonoBehaviour
                 break;
 
             case Event.HitPurpleGoal:
-                // purple wins
-                // purpleAgent.AddReward(1f);
-                //malus decrease if agent is closer to the ball
-                float distToBall_blue = Mathf.Min((ballRb.transform.position - blueAgentRb1.transform.position).magnitude, (ballRb.transform.position - blueAgentRb2.transform.position).magnitude);
-                float malus_blue = -1.4f + Mathf.Exp(-0.5f * distToBall_blue);
-                blueAgent1.AddReward(malus_blue);
-                blueAgent2.AddReward(malus_blue);
+                ApplyDistanceToBallMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
+                ApplyTeamMateDistanceMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
 
                 // turn floor purple
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));

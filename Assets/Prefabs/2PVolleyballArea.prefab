@@ -238,8 +238,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 03000000030000000200000002000000
-    VectorActionSize: 03000000030000000200000002000000
+      BranchSizes: 030000000300000002000000
+    VectorActionSize: 030000000300000002000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -679,8 +679,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 03000000030000000200000002000000
-    VectorActionSize: 03000000030000000200000002000000
+      BranchSizes: 030000000300000002000000
+    VectorActionSize: 030000000300000002000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -829,8 +829,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 03000000030000000200000002000000
-    VectorActionSize: 03000000030000000200000002000000
+      BranchSizes: 030000000300000002000000
+    VectorActionSize: 030000000300000002000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -965,9 +965,9 @@ MonoBehaviour:
   purpleAgent2: {fileID: 2401782393018484300}
   AgentsList:
   - {fileID: 7954672815851726370}
+  - {fileID: 8679369341331311874}
   - {fileID: 2219554007297188915}
   - {fileID: 2401782393018484300}
-  - {fileID: 8679369341331311874}
   ball: {fileID: 1317026924745720295}
   blueGoal: {fileID: 1254629476493177227}
   purpleGoal: {fileID: 5132028400407904075}
@@ -1043,8 +1043,8 @@ MonoBehaviour:
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 03000000030000000200000002000000
-    VectorActionSize: 03000000030000000200000002000000
+      BranchSizes: 030000000300000002000000
+    VectorActionSize: 030000000300000002000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -1357,7 +1357,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8576409450398573086, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
       propertyPath: m_Size.z
-      value: 10
+      value: 1.53
       objectReference: {fileID: 0}
     - target: {fileID: 8576409450398573086, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
       propertyPath: m_Center.x
