@@ -178,7 +178,7 @@ public class VolleyballEnvController : MonoBehaviour
                 float distToBall_purple1 = (ballRb.transform.position - purpleAgent1Rb.transform.position).magnitude;
                 float distToBall_purple2 = (ballRb.transform.position - purpleAgent2Rb.transform.position).magnitude;
 
-                if (lastHitter == Team.Blue){
+                if (lastHitter == Team.Blue || lastHitter == Team.Default){
                     float malus_purple1 = -1 + Mathf.Exp(-0.5f * distToBall_purple1);
                     purpleAgent1.AddReward(malus_purple1);
                 }
@@ -213,8 +213,7 @@ public class VolleyballEnvController : MonoBehaviour
                 //malus decrease if agent is closer to the ball
                 float distToBall_blue1 = (ballRb.transform.position - blueAgent1Rb.transform.position).magnitude;
                 float distToBall_blue2 = (ballRb.transform.position - blueAgent2Rb.transform.position).magnitude;
-
-                if (lastHitter == Team.Purple){
+                if (lastHitter == Team.Purple || lastHitter == Team.Default){
                     float malus_blue1 = -1 + Mathf.Exp(-0.5f * distToBall_blue1);
                     blueAgent1.AddReward(malus_blue1);
                 }
@@ -247,26 +246,16 @@ public class VolleyballEnvController : MonoBehaviour
             case Event.HitIntoBlueArea:
                 if (lastHitter == Team.Purple && lastRoleToHit == Role.Hitter)
                 {
-                    purpleAgent1.AddReward(1f);
-                    purpleAgent2.AddReward(1f);
+                    purpleAgent1.AddReward(0.1f);
+                    purpleAgent2.AddReward(0.1f);
                 }
-                else if (lastHitter == Team.Purple && lastRoleToHit == Role.Setter)
-                {
-                    purpleAgent1.AddReward(0.2f);
-                    purpleAgent2.AddReward(0.2f);
-                }   
                 break;
 
             case Event.HitIntoPurpleArea:
                 if (lastHitter == Team.Blue && lastRoleToHit == Role.Hitter)
                 {
-                    blueAgent1.AddReward(1f);
-                    blueAgent2.AddReward(1f);
-                }
-                else if (lastHitter == Team.Blue && lastRoleToHit == Role.Setter)
-                {
-                    blueAgent1.AddReward(0.2f);
-                    blueAgent2.AddReward(0.2f);
+                    blueAgent1.AddReward(0.1f);
+                    blueAgent2.AddReward(0.1f);
                 }
                 break;
         }
@@ -318,6 +307,7 @@ public class VolleyballEnvController : MonoBehaviour
         resetTimer = 0;
 
         lastHitter = Team.Default; // reset last hitter
+        lastRoleToHit = Role.Default; // reset last role
 
         foreach (var agent in AgentsList)
         {

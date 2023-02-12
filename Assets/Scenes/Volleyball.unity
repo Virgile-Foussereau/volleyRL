@@ -1035,7 +1035,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &963194226
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1078,7 +1078,7 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
+  m_TargetDisplay: 1
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
@@ -1194,14 +1194,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentRunSpeed: 1.5
-  agentJumpHeight: 2.75
+  agentJumpHeight: 3
+  agentJumpHeight4: 3.5
   agentJumpVelocity: 400
   agentJumpVelocityMaxChange: 10
+  agentRange: 1.2
+  ballTouchSpeed: 30
+  ballSmashSpeed: 50
   speedReductionFactor: 0.7
   blueGoalMaterial: {fileID: 2100000, guid: c9fa44c2c3f8ce74ca39a3355ea42631, type: 2}
   purpleGoalMaterial: {fileID: 2100000, guid: b0da1813c36914e678ba57f2790424e1, type: 2}
   defaultMaterial: {fileID: 2100000, guid: 36dc31c319681407abc2da4ddfe78a8a, type: 2}
   fallingForce: 150
+  setTargetZOffset: 3
 --- !u!4 &997631135
 Transform:
   m_ObjectHideFlags: 0

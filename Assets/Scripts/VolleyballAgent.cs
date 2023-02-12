@@ -126,12 +126,12 @@ public class VolleyballAgent : Agent
                 if (envController.lastHitter == teamId && envController.lastRoleToHit == Role.Setter) {
                     float distToLineOfAttack = this.transform.position.z - (netPos.z + volleyballSettings.setTargetZOffset);
                     distToLineOfAttack = Mathf.Abs(distToLineOfAttack);
-                    if (distToLineOfAttack > 12f) {
-                        Debug.Log("distToLineOfAttack is SUPERIOR to 12f");
+                    if (distToLineOfAttack > 15f) {
+                        Debug.Log("distToLineOfAttack is SUPERIOR to 15f");
                         Debug.Log("distToLineOfAttack: " + distToLineOfAttack);
                     }
-                    this.AddReward(0.1f + 0.4f * (1 - distToLineOfAttack / 12f));
-                    teammate.GetComponent<VolleyballAgent>().AddReward(0.1f + 0.4f * (1 - distToLineOfAttack / 12f));
+                    this.AddReward(0.1f + 0.4f * (1 - distToLineOfAttack / 15f));
+                    teammate.GetComponent<VolleyballAgent>().AddReward(0.1f + 0.4f * (1 - distToLineOfAttack / 15f));
                 }
                 else {
                     this.AddReward(-0.01f);
@@ -181,15 +181,15 @@ public class VolleyballAgent : Agent
             if (agentRole == Role.Setter) {
                 if (envController.lastHitter == teamId && envController.lastRoleToHit == Role.Hitter) {
                 float distToSetTarget = Vector3.Distance(this.transform.position, setTargetPos);
-                if (distToSetTarget > 12f) {
-                    Debug.Log("distToSetTarget is SUPERIOR to 12f");
+                if (distToSetTarget > 15f) {
+                    Debug.Log("distToSetTarget is SUPERIOR to 15f");
                     Debug.Log("distToSetTarget: " + distToSetTarget);
                 }
-                this.AddReward(0.1f + 0.4f * (1 - distToSetTarget / 12f));
-                teammate.GetComponent<VolleyballAgent>().AddReward(0.1f + 0.4f * (1 - distToSetTarget / 12f));
+                this.AddReward(0.1f + 0.4f * (1 - distToSetTarget / 15f));
+                teammate.GetComponent<VolleyballAgent>().AddReward(0.1f + 0.4f * (1 - distToSetTarget / 15f));
                 float distTeammateToLineOfAttack = teammate.transform.position.z - (netPos.z + volleyballSettings.setTargetZOffset);
                 distTeammateToLineOfAttack = Mathf.Abs(distTeammateToLineOfAttack);
-                teammate.GetComponent<VolleyballAgent>().AddReward(0.1f * (1 - distTeammateToLineOfAttack / 12f));
+                teammate.GetComponent<VolleyballAgent>().AddReward(0.1f * (1 - distTeammateToLineOfAttack / 15f));
                 }
                 else {
                     this.AddReward(-0.01f);
@@ -198,11 +198,11 @@ public class VolleyballAgent : Agent
             else if (agentRole == Role.Hitter) {
                 if (envController.lastHitter != teamId) {
                     float distTeammateToTarget = Vector3.Distance(teammate.transform.position, setTargetPos);
-                    if (distTeammateToTarget > 12f) {
-                        Debug.Log("distTeammateToTarget is SUPERIOR to 12f");
+                    if (distTeammateToTarget > 15f) {
+                        Debug.Log("distTeammateToTarget is SUPERIOR to 15f");
                         Debug.Log("distTeammateToTarget: " + distTeammateToTarget);
                     }
-                    teammate.GetComponent<VolleyballAgent>().AddReward(0.1f*(1 - distTeammateToTarget / 12f));
+                    teammate.GetComponent<VolleyballAgent>().AddReward(0.1f*(1 - distTeammateToTarget / 15f));
                 }
                 else {
                     this.AddReward(-0.01f);
