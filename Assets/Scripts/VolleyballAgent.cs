@@ -26,7 +26,7 @@ public class VolleyballAgent : Agent
     Vector3 netPos;
 
     VolleyballSettings volleyballSettings;
-    VolleyballEnvController envController;
+    public VolleyballEnvController envController;
 
     // Controls jump behavior
     float jumpingTime;
@@ -37,6 +37,7 @@ public class VolleyballAgent : Agent
     public Collider[] hitGroundColliders = new Collider[3];
     EnvironmentParameters resetParams;
 
+    int[] lastActions;
     void Start()
     {
         envController = area.GetComponent<VolleyballEnvController>();
@@ -256,15 +257,16 @@ public class VolleyballAgent : Agent
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         MoveAgent(actionBuffers.DiscreteActions);
+        lastActions = actionBuffers.DiscreteActions.Array;
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
 
         // vector to ball (vector3)  
-        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x)*agentRot,
+        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x) * agentRot,
         (ballRb.transform.position.y - this.transform.position.y),
-        (ballRb.transform.position.z - this.transform.position.z)*agentRot);
+        (ballRb.transform.position.z - this.transform.position.z) * agentRot);
 
         sensor.AddObservation(toBall.normalized);
 
@@ -272,10 +274,10 @@ public class VolleyballAgent : Agent
         sensor.AddObservation(toBall.magnitude);
 
         // vector to teammate (vector3)
-        Vector3 toTeamMate = new Vector3((teamMateRb.transform.position.x - this.transform.position.x)*agentRot,
+        Vector3 toTeamMate = new Vector3((teamMateRb.transform.position.x - this.transform.position.x) * agentRot,
         (teamMateRb.transform.position.y - this.transform.position.y),
-        (teamMateRb.transform.position.z - this.transform.position.z)*agentRot);
-       
+        (teamMateRb.transform.position.z - this.transform.position.z) * agentRot);
+
         sensor.AddObservation(toTeamMate.normalized);
 
         // Distance to teammate (float)
@@ -332,5 +334,10 @@ public class VolleyballAgent : Agent
             discreteActionsOut[1] = 2;
         }
         discreteActionsOut[2] = Input.GetKey(KeyCode.Space) ? 1 : 0;
+    }
+
+    public int[] GetLastActions()
+    {
+        return lastActions;
     }
 }
