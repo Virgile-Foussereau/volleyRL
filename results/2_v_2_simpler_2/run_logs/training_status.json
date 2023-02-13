@@ -1,0 +1,123 @@
+{
+    "Hitter": {
+        "checkpoints": [
+            {
+                "steps": 18499982,
+                "file_path": "results/2_v_2_simpler_2/Hitter/Hitter-18499982.onnx",
+                "reward": 0.3202431838186597,
+                "creation_time": 1676275664.560964,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Hitter/Hitter-18499982.pt"
+                ]
+            },
+            {
+                "steps": 18999998,
+                "file_path": "results/2_v_2_simpler_2/Hitter/Hitter-18999998.onnx",
+                "reward": 0.3343751649190853,
+                "creation_time": 1676276416.594201,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Hitter/Hitter-18999998.pt"
+                ]
+            },
+            {
+                "steps": 19499996,
+                "file_path": "results/2_v_2_simpler_2/Hitter/Hitter-19499996.onnx",
+                "reward": 0.37418893166744766,
+                "creation_time": 1676277151.392986,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Hitter/Hitter-19499996.pt"
+                ]
+            },
+            {
+                "steps": 19999989,
+                "file_path": "results/2_v_2_simpler_2/Hitter/Hitter-19999989.onnx",
+                "reward": 0.3533602804699077,
+                "creation_time": 1676277887.1701,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Hitter/Hitter-19999989.pt"
+                ]
+            },
+            {
+                "steps": 20000012,
+                "file_path": "results/2_v_2_simpler_2/Hitter/Hitter-20000012.onnx",
+                "reward": 0.35455553258082484,
+                "creation_time": 1676277887.360553,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Hitter/Hitter-20000012.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 20000012,
+            "file_path": "results/2_v_2_simpler_2/Hitter.onnx",
+            "reward": 0.35455553258082484,
+            "creation_time": 1676277887.360553,
+            "auxillary_file_paths": [
+                "results/2_v_2_simpler_2/Hitter/Hitter-20000012.pt"
+            ]
+        }
+    },
+    "Setter": {
+        "checkpoints": [
+            {
+                "steps": 18499982,
+                "file_path": "results/2_v_2_simpler_2/Setter/Setter-18499982.onnx",
+                "reward": 0.3477881621456346,
+                "creation_time": 1676275664.4528298,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Setter/Setter-18499982.pt"
+                ]
+            },
+            {
+                "steps": 18999998,
+                "file_path": "results/2_v_2_simpler_2/Setter/Setter-18999998.onnx",
+                "reward": 0.382562369927643,
+                "creation_time": 1676276416.4857569,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Setter/Setter-18999998.pt"
+                ]
+            },
+            {
+                "steps": 19499996,
+                "file_path": "results/2_v_2_simpler_2/Setter/Setter-19499996.onnx",
+                "reward": 0.3908274481901207,
+                "creation_time": 1676277151.287155,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Setter/Setter-19499996.pt"
+                ]
+            },
+            {
+                "steps": 19999989,
+                "file_path": "results/2_v_2_simpler_2/Setter/Setter-19999989.onnx",
+                "reward": 0.3545322087408452,
+                "creation_time": 1676277887.063534,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Setter/Setter-19999989.pt"
+                ]
+            },
+            {
+                "steps": 20000012,
+                "file_path": "results/2_v_2_simpler_2/Setter/Setter-20000012.onnx",
+                "reward": 0.35597850645708146,
+                "creation_time": 1676277887.26613,
+                "auxillary_file_paths": [
+                    "results/2_v_2_simpler_2/Setter/Setter-20000012.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 20000012,
+            "file_path": "results/2_v_2_simpler_2/Setter.onnx",
+            "reward": 0.35597850645708146,
+            "creation_time": 1676277887.26613,
+            "auxillary_file_paths": [
+                "results/2_v_2_simpler_2/Setter/Setter-20000012.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.28.0",
+        "torch_version": "1.8.1"
+    }
+}

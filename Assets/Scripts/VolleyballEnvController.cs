@@ -9,6 +9,20 @@ public enum Team
     Default = 2
 }
 
+public enum Role
+{
+    Hitter = 0,
+    Setter = 1,
+    Default = 2
+}
+
+public enum Touch {
+
+    Set = 0,
+    Smash = 1,
+    Default = 2
+}
+
 public enum Event
 {
     HitPurpleGoal = 0,
@@ -49,6 +63,14 @@ public class VolleyballEnvController : MonoBehaviour
 
     Team lastHitter;
 
+    Team previousHitter;
+
+    Role lastRole;
+
+    Role previousRole;
+
+    Touch lastTouch;
+
     private int resetTimer;
     public int MaxEnvironmentSteps;
 
@@ -84,7 +106,34 @@ public class VolleyballEnvController : MonoBehaviour
     /// </summary>
     public void UpdateLastHitter(Team team)
     {
+        previousHitter = lastHitter;
         lastHitter = team;
+    }
+
+    public Team GetLastHitter()
+    {
+        return lastHitter;
+    }
+
+    public void UpdateLastRole(Role role)
+    {
+        previousRole = lastRole;
+        lastRole = role;
+    }
+
+    public Role GetLastRole()
+    {
+        return lastRole;
+    }
+
+    public void UpdateLastTouch(Touch touch)
+    {
+        lastTouch = touch;
+    }
+
+    public Touch GetLastTouch()
+    {
+        return lastTouch;
     }
 
     /// <summary>
@@ -105,10 +154,24 @@ public class VolleyballEnvController : MonoBehaviour
                     //compute angle between ballRb.velocity and the net
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
                     float rmin = 0.3f;
-                    float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin / 2 * (cos_angle - 1);
-                    blueAgent1.AddReward(malus_outOfBound);
-                    blueAgent2.AddReward(malus_outOfBound);
+
+                    if (lastRole == Role.Setter)
+                    {
+                        Vector3 dir_to_teamMate = (blueAgent1.transform.position - blueAgent2.transform.position).normalized;
+                        float cos_angle = Vector3.Dot(dir_to_teamMate, flatVelocity) / (dir_to_teamMate.magnitude * flatVelocity.magnitude);
+                        float malus_outOfBound = rmin / 2 * (cos_angle - 1);
+                        blueAgent2.AddReward(malus_outOfBound);
+                    }
+                    else if (lastRole == Role.Hitter)
+                    {
+                        float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
+                        float malus_outOfBound = rmin / 2 * (cos_angle - 1);
+                        blueAgent1.AddReward(malus_outOfBound);
+                    }
+
+                    // turn floor purple
+                     StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
+
                 }
                 else if (lastHitter == Team.Purple)
                 {
@@ -118,10 +181,23 @@ public class VolleyballEnvController : MonoBehaviour
                     //compute angle between ballRb.velocity and the net
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
                     float rmin = 0.3f;
-                    float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
-                    float malus_outOfBound = rmin / 2 * (cos_angle - 1);
-                    purpleAgent1.AddReward(malus_outOfBound);
-                    purpleAgent2.AddReward(malus_outOfBound);
+                    if (lastRole == Role.Setter)
+                    {
+                        Vector3 dir_to_teamMate = (purpleAgentRb1.transform.position - purpleAgentRb2.transform.position).normalized;
+                        float cos_angle = Vector3.Dot(dir_to_teamMate, flatVelocity) / (dir_to_teamMate.magnitude * flatVelocity.magnitude);
+                        float malus_outOfBound = rmin / 2 * (cos_angle - 1);
+                        purpleAgent2.AddReward(malus_outOfBound);
+                    }
+                    else if (lastRole == Role.Hitter)
+                    {
+                        float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
+                        float malus_outOfBound = rmin / 2 * (cos_angle - 1);
+                        purpleAgent1.AddReward(malus_outOfBound);
+                    }
+
+                    // turn floor blue
+                    StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
+
                 }
 
                 // end episode
@@ -137,10 +213,26 @@ public class VolleyballEnvController : MonoBehaviour
                 // blue wins
                 // blueAgent.AddReward(1f);
                 // purpleAgent.AddReward(-1f);
-                float distToBall_purple = Mathf.Min((ballRb.transform.position - purpleAgentRb1.transform.position).magnitude, (ballRb.transform.position - purpleAgentRb2.transform.position).magnitude);
-                float malus_purple = -1.4f + Mathf.Exp(-0.5f * distToBall_purple);
-                purpleAgent1.AddReward(malus_purple);
-                purpleAgent2.AddReward(malus_purple);
+                if (lastHitter == Team.Purple && lastRole == Role.Hitter && lastTouch == Touch.Smash)
+                {
+                    Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
+                    float cos_angle = Vector3.Dot(flatVelocity, Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
+                    float rmin = 0.3f;
+                    float malusBadSmash = rmin / 2 * (cos_angle - 1);
+                    purpleAgent1.AddReward(malusBadSmash);
+
+                }
+                else if (lastHitter == Team.Purple && lastRole == Role.Setter)
+                {
+                    float distToBall_purple = (ballRb.transform.position - purpleAgentRb1.transform.position).magnitude;
+                    float malus_purple = -1f + Mathf.Exp(-0.5f * distToBall_purple);
+                    purpleAgent1.AddReward(malus_purple);
+                }
+                else {
+                    float distToBall_purple = (ballRb.transform.position - purpleAgentRb2.transform.position).magnitude;
+                    float malus_purple = -1f + Mathf.Exp(-0.5f * distToBall_purple);
+                    purpleAgent2.AddReward(malus_purple);
+                }
 
                 // turn floor blue
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
@@ -157,10 +249,25 @@ public class VolleyballEnvController : MonoBehaviour
                 // purple wins
                 // purpleAgent.AddReward(1f);
                 //malus decrease if agent is closer to the ball
-                float distToBall_blue = Mathf.Min((ballRb.transform.position - blueAgentRb1.transform.position).magnitude, (ballRb.transform.position - blueAgentRb2.transform.position).magnitude);
-                float malus_blue = -1.4f + Mathf.Exp(-0.5f * distToBall_blue);
-                blueAgent1.AddReward(malus_blue);
-                blueAgent2.AddReward(malus_blue);
+                if (lastHitter == Team.Blue && lastRole == Role.Hitter && lastTouch == Touch.Smash)
+                {
+                    Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
+                    float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
+                    float rmin = 0.3f;
+                    float malusBadSmash = rmin / 2 * (cos_angle - 1);
+                    blueAgent1.AddReward(malusBadSmash);
+                }
+                else if (lastHitter == Team.Blue && lastRole == Role.Setter)
+                {
+                    float distToBall_blue = (ballRb.transform.position - blueAgentRb1.transform.position).magnitude;
+                    float malus_blue = -1f + Mathf.Exp(-0.5f * distToBall_blue);
+                    blueAgent1.AddReward(malus_blue);
+                }
+                else {
+                    float distToBall_blue = (ballRb.transform.position - blueAgentRb2.transform.position).magnitude;
+                    float malus_blue = -1f + Mathf.Exp(-0.5f * distToBall_blue);
+                    blueAgent2.AddReward(malus_blue);
+                }
 
                 // turn floor purple
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
@@ -177,18 +284,22 @@ public class VolleyballEnvController : MonoBehaviour
             case Event.HitIntoBlueArea:
                 if (lastHitter == Team.Purple)
                 {
-                    purpleAgent1.AddReward(1);
-                    purpleAgent2.AddReward(1);
-                    //blueAgent.AddReward(-1);
+                    if (lastRole == Role.Hitter && lastTouch == Touch.Smash && previousHitter == Team.Purple && previousRole == Role.Setter)
+                    {
+                        purpleAgent1.AddReward(1f);
+                        purpleAgent2.AddReward(1f);
+                    }
                 }
                 break;
 
             case Event.HitIntoPurpleArea:
                 if (lastHitter == Team.Blue)
                 {
-                    blueAgent1.AddReward(1);
-                    blueAgent2.AddReward(1);
-                    //purpleAgent.AddReward(-1);
+                    if (lastRole == Role.Hitter && lastTouch == Touch.Smash && previousHitter == Team.Blue && previousRole == Role.Setter)
+                    {
+                        blueAgent1.AddReward(1f);
+                        blueAgent2.AddReward(1f);
+                    }
                 }
                 break;
         }
@@ -240,6 +351,10 @@ public class VolleyballEnvController : MonoBehaviour
         resetTimer = 0;
 
         lastHitter = Team.Default; // reset last hitter
+        lastRole = Role.Default; // reset last role
+        lastTouch = Touch.Default; // reset last touch
+        previousHitter = Team.Default; // reset previous hitter
+        previousRole = Role.Default; // reset previous role
 
         foreach (var agent in AgentsList)
         {

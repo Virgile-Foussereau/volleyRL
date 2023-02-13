@@ -9,8 +9,12 @@ public class VolleyballAgent : Agent
     public GameObject area;
     Rigidbody agentRb;
     public GameObject teamMate;
+
+    Rigidbody teamMateRb;
     BehaviorParameters behaviorParameters;
     public Team teamId;
+
+    public Role roleId;
 
     // To get ball's location for observations
     public GameObject ball;
@@ -45,6 +49,7 @@ public class VolleyballAgent : Agent
 
 
         agentRb = GetComponent<Rigidbody>();
+        teamMateRb = teamMate.GetComponent<Rigidbody>();
         ballRb = ball.GetComponent<Rigidbody>();
 
         netPos = net.transform.position;
@@ -81,15 +86,17 @@ public class VolleyballAgent : Agent
                 rb.velocity, velocityTarget, maxVel);
         }
     }
-    void Touch()
+    void Set()
     {
         //calculate vector from agent to ball
         Vector3 agentToBall = ball.transform.position - transform.position;
 
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
-            //AddReward(0.1f);
             ballRb.velocity = agentToBall.normalized * volleyballSettings.ballTouchSpeed;
+            envController.UpdateLastHitter(teamId);
+            envController.UpdateLastRole(roleId);
+            envController.UpdateLastTouch(Touch.Set);
         }
     }
 
@@ -99,10 +106,21 @@ public class VolleyballAgent : Agent
         Vector3 agentToBall = ball.transform.position - transform.position;
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
-            //AddReward(0.2f);
+            if (envController.GetLastHitter() == teamId &&
+                envController.GetLastRole() == Role.Setter && roleId == Role.Hitter)
+            {
+                // add reward to teamMate
+                teamMate.GetComponent<VolleyballAgent>().AddReward(0.5f);
+                // add reward to agent
+                AddReward(0.3f);
+            }
             Vector3 planeNormal = Vector3.Cross(Vector3.up, agentToBall.normalized);
             Vector3 smashDir = Vector3.Cross(planeNormal, Vector3.up);
             ballRb.velocity = smashDir * volleyballSettings.ballSmashSpeed;
+
+            envController.UpdateLastHitter(teamId);
+            envController.UpdateLastRole(roleId);
+            envController.UpdateLastTouch(Touch.Smash);
         }
     }
 
@@ -140,6 +158,7 @@ public class VolleyballAgent : Agent
         if (c.gameObject.CompareTag("ball"))
         {
             envController.UpdateLastHitter(teamId);
+            envController.UpdateLastRole(roleId);
         }
     }
 
@@ -148,7 +167,10 @@ public class VolleyballAgent : Agent
     /// </summary>
     public void Jump()
     {
-        AddReward(-0.1f);
+        if (roleId == Role.Setter)
+        {
+            AddReward(-0.1f);
+        }
         jumpingTime = 0.2f;
         jumpStartingPos = agentRb.position;
     }
@@ -221,7 +243,7 @@ public class VolleyballAgent : Agent
         {
             if (grounded)
             {
-                Touch();
+                Set();
             }
             else
             {
@@ -239,23 +261,25 @@ public class VolleyballAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
 
-        // Agent position (vector3)
+        // vector to ball (vector3)  
+        Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x)*agentRot,
+        (ballRb.transform.position.y - this.transform.position.y),
+        (ballRb.transform.position.z - this.transform.position.z)*agentRot);
 
-        Vector3 agentPos = new Vector3((this.transform.position.x - netPos.x) * agentRot, this.transform.position.y - netPos.y, (this.transform.position.z - netPos.z) * agentRot);
+        sensor.AddObservation(toBall.normalized);
 
-        sensor.AddObservation(agentPos);
+        // Distance to ball (float)
+        sensor.AddObservation(toBall.magnitude);
 
-        // Ball position (vector3)  
-        Vector3 ballPos = new Vector3((ballRb.transform.position.x - netPos.x) * agentRot,
-        (ballRb.transform.position.y - netPos.y),
-        (ballRb.transform.position.z - netPos.z) * agentRot);
+        // vector to teammate (vector3)
+        Vector3 toTeamMate = new Vector3((teamMateRb.transform.position.x - this.transform.position.x)*agentRot,
+        (teamMateRb.transform.position.y - this.transform.position.y),
+        (teamMateRb.transform.position.z - this.transform.position.z)*agentRot);
+       
+        sensor.AddObservation(toTeamMate.normalized);
 
-        sensor.AddObservation(ballPos);
-
-        // teammate position (vector3)
-        Vector3 teammatePos = new Vector3((teamMate.transform.position.x - netPos.x) * agentRot, teamMate.transform.position.y - netPos.y, (teamMate.transform.position.z - netPos.z) * agentRot);
-
-        sensor.AddObservation(teammatePos);
+        // Distance to teammate (float)
+        sensor.AddObservation(toTeamMate.magnitude);
 
 
         // Ball velocity (3 floats)
@@ -263,9 +287,24 @@ public class VolleyballAgent : Agent
         sensor.AddObservation(ballRb.velocity.z * agentRot);
         sensor.AddObservation(ballRb.velocity.x * agentRot);
 
-        Vector3 toBall = ballPos - agentPos;
-        sensor.AddObservation(toBall.normalized);
-        sensor.AddObservation(toBall.magnitude);
+        // last player touch (int)
+        Team lastHitter = envController.GetLastHitter();
+        Role lastRole = envController.GetLastRole();
+        if (lastHitter == teamId)
+        {
+            if (lastRole == roleId)
+            {
+                sensor.AddObservation(0);
+            }
+            else
+            {
+                sensor.AddObservation(1);
+            }
+        }
+        else
+        {
+            sensor.AddObservation(2);
+        }
     }
 
     // For human controller

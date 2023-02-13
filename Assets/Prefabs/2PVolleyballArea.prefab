@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 4225126290462778290}
   - component: {fileID: 6637432484309119461}
   m_Layer: 6
-  m_Name: BlueAgent (1)
+  m_Name: BlueAgent2
   m_TagString: blueAgent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 16
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -243,10 +243,10 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 36819bf811f484d49a1aaf35e3844ec0, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
-  m_BehaviorName: Volleyball
+  m_BehaviorName: Setter
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -271,6 +271,7 @@ MonoBehaviour:
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 7954672815851726371}
   teamId: 0
+  roleId: 1
   ball: {fileID: 1317026924745720295}
   net: {fileID: 7954672816082332773}
   hitGroundColliders:
@@ -624,7 +625,7 @@ GameObject:
   - component: {fileID: 8241164390451994639}
   - component: {fileID: 6327617998853010357}
   m_Layer: 6
-  m_Name: PurpleAgent
+  m_Name: PurpleAgent1
   m_TagString: purpleAgent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -675,7 +676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 16
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -684,10 +685,10 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 1f06a1968bb614e22bfd87276736c0e6, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
-  m_BehaviorName: Volleyball
+  m_BehaviorName: Hitter
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -712,6 +713,7 @@ MonoBehaviour:
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 6931804249805757513}
   teamId: 1
+  roleId: 0
   ball: {fileID: 1317026924745720295}
   net: {fileID: 7954672816082332773}
   hitGroundColliders:
@@ -774,7 +776,7 @@ GameObject:
   - component: {fileID: 4910179873981865402}
   - component: {fileID: 2649346458898701311}
   m_Layer: 6
-  m_Name: PurpleAgent (1)
+  m_Name: PurpleAgent2
   m_TagString: purpleAgent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -825,7 +827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 16
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -834,10 +836,10 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 36819bf811f484d49a1aaf35e3844ec0, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
-  m_BehaviorName: Volleyball
+  m_BehaviorName: Setter
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -862,6 +864,7 @@ MonoBehaviour:
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 5501864745727209264}
   teamId: 1
+  roleId: 1
   ball: {fileID: 1317026924745720295}
   net: {fileID: 7954672816082332773}
   hitGroundColliders:
@@ -966,8 +969,8 @@ MonoBehaviour:
   AgentsList:
   - {fileID: 7954672815851726370}
   - {fileID: 2219554007297188915}
-  - {fileID: 2401782393018484300}
   - {fileID: 8679369341331311874}
+  - {fileID: 2401782393018484300}
   ball: {fileID: 1317026924745720295}
   blueGoal: {fileID: 1254629476493177227}
   purpleGoal: {fileID: 5132028400407904075}
@@ -988,7 +991,7 @@ GameObject:
   - component: {fileID: 7954672815851726558}
   - component: {fileID: 7416857712268663273}
   m_Layer: 6
-  m_Name: BlueAgent
+  m_Name: BlueAgent1
   m_TagString: blueAgent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1039,7 +1042,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 16
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -1048,10 +1051,10 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 1f06a1968bb614e22bfd87276736c0e6, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
-  m_BehaviorName: Volleyball
+  m_BehaviorName: Hitter
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
@@ -1076,6 +1079,7 @@ MonoBehaviour:
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 3382155554176046884}
   teamId: 0
+  roleId: 0
   ball: {fileID: 1317026924745720295}
   net: {fileID: 7954672816082332773}
   hitGroundColliders:
