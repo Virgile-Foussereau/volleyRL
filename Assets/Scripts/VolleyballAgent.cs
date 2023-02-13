@@ -32,15 +32,23 @@ public class VolleyballAgent : Agent
     float agentRot;
 
     float mobilityReductionTime;
-    float smashCD;
+    float touchCD;
 
     public Collider[] hitGroundColliders = new Collider[3];
     EnvironmentParameters resetParams;
 
+    private float terrainWidth = 15f;
+    private float terrainLength = 15f;
+    private Vector2[] importantPoints = new Vector2[4];
 
     void Start()
     {
         envController = area.GetComponent<VolleyballEnvController>();
+        importantPoints = new Vector2[4];
+        importantPoints[0] = new Vector2(-terrainWidth / 4f, terrainLength / 4f);
+        importantPoints[1] = new Vector2(terrainWidth / 4f, terrainLength / 4f);
+        importantPoints[2] = new Vector2(terrainWidth / 4f, 3 * terrainLength / 4f);
+        importantPoints[3] = new Vector2(-terrainWidth / 4f, 3 * terrainLength / 4f);
     }
 
     public override void Initialize()
@@ -64,7 +72,7 @@ public class VolleyballAgent : Agent
             agentRot = 1;
         }
         mobilityReductionTime = 0f;
-        smashCD = 0f;
+        touchCD = 0f;
         resetParams = Academy.Instance.EnvironmentParameters;
     }
 
@@ -94,7 +102,7 @@ public class VolleyballAgent : Agent
 
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
-            //AddReward(0.1f);
+            AddReward(0.1f);
             ballRb.velocity = agentToBall.normalized * volleyballSettings.ballTouchSpeed;
         }
     }
@@ -105,11 +113,17 @@ public class VolleyballAgent : Agent
         Vector3 agentToBall = ball.transform.position - transform.position;
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
-            AddReward(0.3f);
-            //AddReward(0.2f);
-            Vector3 planeNormal = Vector3.Cross(Vector3.up, agentToBall.normalized);
-            Vector3 smashDir = Vector3.Cross(planeNormal, Vector3.up);
-            ballRb.velocity = smashDir * volleyballSettings.ballSmashSpeed;
+            if (ballRb.velocity.z * agentRot < volleyballSettings.maxBallSpeedForSmash)
+            {
+                AddReward(0.15f);
+                Vector3 planeNormal = Vector3.Cross(Vector3.up, agentToBall.normalized);
+                Vector3 smashDir = Vector3.Cross(planeNormal, Vector3.up);
+                ballRb.velocity = smashDir * volleyballSettings.ballSmashSpeed;
+            }
+            else
+            {
+                Touch();
+            }
         }
     }
 
@@ -147,17 +161,7 @@ public class VolleyballAgent : Agent
         if (c.gameObject.CompareTag("ball"))
         {
             envController.UpdateLastHitter(teamId);
-
-            AddReward(0.05f);
-            bool grounded = CheckIfGrounded();
-            if (!grounded)
-            {
-                AddReward(0.1f);
-            }
-        }
-        if (c.gameObject.tag == gameObject.tag)
-        {
-            AddReward(-0.1f);
+            //AddReward(0.1f);
         }
     }
 
@@ -196,6 +200,52 @@ public class VolleyballAgent : Agent
         }
     }
 
+    void RewardTerrainControl()
+    {
+        float sum = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            Vector3 actualPoint = netPos + new Vector3(-importantPoints[i].x, 0, -importantPoints[i].y) * agentRot;
+            float pointDist = Mathf.Min(Vector3.Distance(teamMate.transform.position, actualPoint), Vector3.Distance(transform.position, actualPoint));
+            sum += 1f / (pointDist + 1);
+            //show actual point in the scene
+            if (teamId == Team.Blue)
+            {
+                Debug.DrawLine(actualPoint, actualPoint + Vector3.up * 2f, Color.red);
+            }
+        }
+        AddReward(0.002f * sum);
+    }
+    void OnBallAction(bool grounded)
+    {
+        if (grounded)
+        {
+            float distToBall = Vector3.Distance(ball.transform.position, transform.position);
+            if (distToBall < volleyballSettings.agentRange)
+            {
+                if (touchCD <= 0f)
+                {
+                    Touch();
+                    touchCD = volleyballSettings.touchCD;
+                }
+            }
+            else
+            {
+                if (jumpingTime <= 0f && mobilityReductionTime <= 0f)
+                {
+                    Jump();
+                    mobilityReductionTime = volleyballSettings.mobilityReductionTime;
+                }
+            }
+
+        }
+        if (!grounded && touchCD <= 0f)
+        {
+            Smash();
+            touchCD = volleyballSettings.touchCD;
+        }
+    }
+
     /// <summary>
     /// Resolves the agent movement
     /// </summary>
@@ -205,6 +255,10 @@ public class VolleyballAgent : Agent
         if (mobilityReductionTime > 0f)
         {
             mobilityReductionTime -= Time.fixedDeltaTime;
+        }
+        if (touchCD > 0f)
+        {
+            touchCD -= Time.fixedDeltaTime;
         }
 
         var grounded = CheckIfGrounded();
@@ -234,18 +288,8 @@ public class VolleyballAgent : Agent
 
         if (ballAction == 1)
         {
-            if (((jumpingTime <= 0f) && grounded) && mobilityReductionTime <= 0f)
-            {
-                Jump();
-            }
-            if (!grounded && smashCD <= 0f)
-            {
-                Smash();
-                smashCD = volleyballSettings.smashCD;
-            }
-            mobilityReductionTime = volleyballSettings.mobilityReductionTime;
+            OnBallAction(grounded);
         }
-
 
 
         // Rotate the agent towards the direction it is moving
@@ -259,24 +303,25 @@ public class VolleyballAgent : Agent
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         MoveAgent(actionBuffers.DiscreteActions);
+        RewardTerrainControl();
     }
 
     public override void CollectObservations(VectorSensor sensor)
     {
 
         // Ball position (vector3)  
-        Vector3 ballPos = new Vector3((ball.transform.position.x - netPos.x) * agentRot, ball.transform.position.y - netPos.y, (ball.transform.position.z - netPos.z) * agentRot);
-        Vector3 teammatePos = new Vector3((teamMate.transform.position.x - netPos.x) * agentRot, teamMate.transform.position.y - netPos.y, (teamMate.transform.position.z - netPos.z) * agentRot);
-        Vector3 agentPos = new Vector3((transform.position.x - netPos.x) * agentRot, transform.position.y - netPos.y, (transform.position.z - netPos.z) * agentRot);
+        Vector3 ballPos = new Vector3(ball.transform.position.x * agentRot, ball.transform.position.y, ball.transform.position.z * agentRot);
+        Vector3 teammatePos = new Vector3(teamMate.transform.position.x * agentRot, teamMate.transform.position.y, teamMate.transform.position.z * agentRot);
+        Vector3 agentPos = new Vector3(transform.position.x * agentRot, transform.position.y, transform.position.z * agentRot);
 
         Vector3 toBall = ballPos - agentPos;
         sensor.AddObservation(toBall.normalized);
         sensor.AddObservation(toBall.magnitude);
 
-        Vector3 teamMateToBall = ballPos - teammatePos;
-
-        sensor.AddObservation(teamMateToBall.normalized);
-        sensor.AddObservation(teamMateToBall.magnitude);
+        //net position (vector3)
+        Vector3 toNet = netPos - agentPos;
+        sensor.AddObservation(toNet.normalized);
+        sensor.AddObservation(toNet.magnitude);
 
         // teammate position (vector3)
         Vector3 toTeammate = teammatePos - agentPos;

@@ -94,27 +94,34 @@ public class VolleyballEnvController : MonoBehaviour
     /// </summary>
     void ApplyDistanceToBallMalus(VolleyballAgent[] agents)
     {
-        float distanceToBall = Mathf.Infinity;
+
         foreach (VolleyballAgent agent in agents)
         {
-            float dist = Vector3.Distance(agent.transform.position, ball.transform.position);
-            if (dist < distanceToBall)
-            {
-                distanceToBall = dist;
-            }
-        }
-        float malus = -1.4f + Mathf.Exp(-0.5f * distanceToBall);
-        foreach (VolleyballAgent agent in agents)
-        {
+            float distanceToBall = Vector3.Distance(agent.transform.position, ball.transform.position);
+            float malus = Mathf.Exp(-0.5f * distanceToBall) - 1f;
             agent.AddReward(malus);
         }
+
+
     }
 
-    void ApplyOutOfBoundsMalus(VolleyballAgent[] agents)
+    void ApplyDirectionMalus(VolleyballAgent[] agents, Team team)
     {
         Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
+        if (flatVelocity.magnitude == 0)
+        {
+            return;
+        }
         float rmin = 0.3f;
-        float cos_angle = Vector3.Dot(flatVelocity, -Vector3.forward) / (flatVelocity.magnitude * Vector3.forward.magnitude);
+        float cos_angle = 0;
+        if (team == Team.Blue)
+        {
+            cos_angle = Vector3.Dot(flatVelocity.normalized, -Vector3.forward);
+        }
+        else if (team == Team.Purple)
+        {
+            cos_angle = Vector3.Dot(flatVelocity.normalized, Vector3.forward);
+        }
         float malus_outOfBound = rmin / 2 * (cos_angle - 1);
         foreach (VolleyballAgent agent in agents)
         {
@@ -138,7 +145,7 @@ public class VolleyballEnvController : MonoBehaviour
                     }
                 }
             }
-            float malus = -Mathf.Exp(-distanceToClosestTeammate);
+            float malus = -0.1f * Mathf.Exp(-distanceToClosestTeammate);
             agent.AddReward(malus);
         }
     }
@@ -149,11 +156,13 @@ public class VolleyballEnvController : MonoBehaviour
             case Event.HitOutOfBounds:
                 if (lastHitter == Team.Blue)
                 {
-                    ApplyOutOfBoundsMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
+                    ApplyDirectionMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 }, Team.Blue);
+                    ApplyTeamMateDistanceMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
                 }
                 else if (lastHitter == Team.Purple)
                 {
-                    ApplyOutOfBoundsMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
+                    ApplyDirectionMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 }, Team.Purple);
+                    ApplyTeamMateDistanceMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
                 }
 
                 // end episode
@@ -167,7 +176,14 @@ public class VolleyballEnvController : MonoBehaviour
 
             case Event.HitBlueGoal:
                 // blue wins
-                ApplyDistanceToBallMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
+                if (lastHitter == Team.Blue || lastHitter == Team.Default)
+                {
+                    ApplyDistanceToBallMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
+                }
+                else
+                {
+                    ApplyDirectionMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 }, Team.Purple);
+                }
                 ApplyTeamMateDistanceMalus(new VolleyballAgent[] { purpleAgent1, purpleAgent2 });
                 // turn floor blue
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
@@ -181,7 +197,14 @@ public class VolleyballEnvController : MonoBehaviour
                 break;
 
             case Event.HitPurpleGoal:
-                ApplyDistanceToBallMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
+                if (lastHitter == Team.Purple || lastHitter == Team.Default)
+                {
+                    ApplyDistanceToBallMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
+                }
+                else
+                {
+                    ApplyDirectionMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 }, Team.Blue);
+                }
                 ApplyTeamMateDistanceMalus(new VolleyballAgent[] { blueAgent1, blueAgent2 });
 
                 // turn floor purple
@@ -266,9 +289,9 @@ public class VolleyballEnvController : MonoBehaviour
         foreach (var agent in AgentsList)
         {
             // randomise starting positions and rotations
-            var randomPosX = Random.Range(-2f, 2f);
-            var randomPosZ = Random.Range(-2f, 2f);
-            var randomPosY = Random.Range(0.5f, 3.75f); // depends on jump height
+            var randomPosX = Random.Range(-2.75f, 2.75f);
+            var randomPosZ = Random.Range(-2.75f, 2.75f);
+            var randomPosY = 2f;
             var randomRot = Random.Range(-45f, 45f);
 
             agent.transform.localPosition = new Vector3(randomPosX, randomPosY, randomPosZ);
