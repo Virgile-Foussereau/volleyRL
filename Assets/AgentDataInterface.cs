@@ -14,7 +14,7 @@ public class AgentDataInterface : MonoBehaviour
     {
         AgentDataStruct agentData = new AgentDataStruct();
         agentData.discreteActions = agent.GetLastActions();
-        agentData.teamMateDist = Vector3.Distance(agent.transform.position, agent.teamMate.transform.position);
+        agentData.teamMateDist = Vector3.Distance(agent.transform.position, agent.player1.transform.position);
         agentData.ballDist = Vector3.Distance(agent.transform.position, agent.ball.transform.position);
         agentData.lastHitter = agent.envController.GetLastHitter();
         agentData.lastRole = agent.envController.GetLastRole();
