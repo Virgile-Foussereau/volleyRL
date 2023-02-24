@@ -71,4 +71,4 @@ The following baselines are included:
 - `Volleyball_Random.onnx` - Random agent
 - `Volleyball_SelfPlay.onnx` - Trained using PPO with Self-Play in 60M steps
 - `Volleyball.onnx` - Trained using PPO in 60M steps (without Self-Play)
-- `VB_3.onnx` - Agent trained with our new reward function 
+- `trained_1v1.onnx` - Agent trained with our new reward function
