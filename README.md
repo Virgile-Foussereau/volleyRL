@@ -1,6 +1,6 @@
-# INF581 Project - Reinforcement Learning Volleyball
+# INF581 Project - Reinforcement Learning Volleyball 2v2 competitive set-up
 
-![Ultimate Volleyball](https://www.gocoder.one/static/ultimate-volleyball-eb08a31356cf6a5add9ad2b3ec76cfc6.gif)
+![Ultimate Volleyball](https://im3.ezgif.com/tmp/ezgif-3-640407fde8.gif)
 
 
 This ongoing project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. Original code can be found [here](https://github.com/CoderOneHQ/ultimate-volleyball). In this environment, two agents play volleyball over a net. We have two goals in our project :
