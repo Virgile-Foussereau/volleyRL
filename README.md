@@ -3,7 +3,7 @@
 ![Ultimate Volleyball](https://www.gocoder.one/static/ultimate-volleyball-eb08a31356cf6a5add9ad2b3ec76cfc6.gif)
 
 
-This ongoing project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. In this environment, two agents play volleyball over a net. We have two goals in our project :
+This ongoing project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. Original code can be found [here](https://github.com/CoderOneHQ/ultimate-volleyball). In this environment, two agents play volleyball over a net. We have two goals in our project :
 
 1. Improve the existing environment using reward engineering to increase training speed.
 2. Develop and compare several methods to implement 2v2 volleyball games.
@@ -16,8 +16,8 @@ This ongoing project is based on the ultimate volleyball environment built on [U
 
 ## Getting Started
 1. Install the [Unity ML-Agents toolkit](https:github.com/Unity-Technologies/ml-agents) (Release 19+) by following the [installation instructions](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Installation.md).
-2. Download or clone this repo containing the `ultimate-volleyball` Unity project.
-3. Open the `ultimate-volleyball` project in Unity (Unity Hub → Projects → Add → Select root folder for this repo).
+2. Download or clone this repo containing the `volleyRL` Unity project.
+3. Open the `volleyRL` project in Unity (Unity Hub → Projects → Add → Select root folder for this repo).
 4. Load the `VolleyballMain` scene (Project panel → Assets → Scenes → `VolleyballMain.unity`).
 5. Click the ▶ button at the top of the window. This will run the agent in inference mode using the provided baseline model.
 
@@ -33,7 +33,7 @@ This ongoing project is based on the ultimate volleyball environment built on [U
 
 For more detailed instructions, check the [ML-Agents getting started guide](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Getting-Started.md).
 
-## Environment Description
+## Environment Description 2v2 set-up
 **Goal:** Get the ball to bounce in the opponent's side of the court while preventing the ball bouncing into your own court.
 
 **Action space:**
@@ -64,7 +64,7 @@ Accordingly to our first objective, we worked to develop a more complex reward f
 ## Baselines
 The following baselines are included:
 
-### 1v1
+### 1v1 
 - `Volleyball_Random.onnx` - Random agent
 - `Volleyball_SelfPlay.onnx` - Trained using PPO with Self-Play in 60M steps
 - `Volleyball.onnx` - Trained using PPO in 60M steps (without Self-Play)
