@@ -9,8 +9,6 @@ public class VolleyballAgent : Agent
     public GameObject area;
     Rigidbody agentRb;
     public GameObject teamMate;
-    public GameObject enemyHitter;
-
 
     Rigidbody teamMateRb;
     BehaviorParameters behaviorParameters;
@@ -132,7 +130,7 @@ public class VolleyballAgent : Agent
     /// </summary>
     public bool CheckIfGrounded()
     {
-        hitGroundColliders = new Collider[5];
+        hitGroundColliders = new Collider[3];
         Physics.OverlapBoxNonAlloc(
             transform.localPosition + new Vector3(0, -0.05f, 0),
             new Vector3(0.95f / 2f, 0.5f, 0.95f / 2f),
@@ -216,10 +214,7 @@ public class VolleyballAgent : Agent
         // Rotate the agent towards the direction it is moving
         if (dirToGo.magnitude != 0f)
         {
-            agentRb.transform.rotation = Quaternion.Lerp(
-                agentRb.transform.rotation,
-                Quaternion.LookRotation(dirToGo),
-                0.05f);
+            agentRb.transform.rotation = Quaternion.LookRotation(dirToGo);
         }
 
 
@@ -287,15 +282,6 @@ public class VolleyballAgent : Agent
 
         // Distance to teammate (float)
         sensor.AddObservation(toTeamMate.magnitude);
-
-        // vector to enemy hitter (vector3)
-        Vector3 toOpponent = new Vector3((enemyHitter.transform.position.x - this.transform.position.x) * agentRot,
-        (enemyHitter.transform.position.y - this.transform.position.y),
-        (enemyHitter.transform.position.z - this.transform.position.z) * agentRot);
-
-        sensor.AddObservation(toOpponent.normalized);
-        sensor.AddObservation(toOpponent.magnitude);
-
 
 
         // Ball velocity (3 floats)

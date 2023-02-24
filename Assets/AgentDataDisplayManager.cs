@@ -74,7 +74,7 @@ public class AgentDataDisplayManager : MonoBehaviour
             GameObject actionItem = Instantiate(actionPrefab, actionDisplayer.transform);
             actionListItems.Add(actionItem);
         }
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             GameObject observationItem = Instantiate(observationPrefab, observationDisplayer.transform);
             observationListItems.Add(observationItem);
@@ -91,12 +91,6 @@ public class AgentDataDisplayManager : MonoBehaviour
         observationListItems[0].GetComponent<TMPro.TMP_Text>().text = "Teammate distance : " + agentData.teamMateDist.ToString("F1");
         observationListItems[1].GetComponent<TMPro.TMP_Text>().text = "Ball distance : " + agentData.ballDist.ToString("F1");
         observationListItems[2].GetComponent<TMPro.TMP_Text>().text = "Cumulative reward : " + agentData.reward.ToString();
-        observationListItems[3].GetComponent<TMPro.TMP_Text>().text = "Grounded : " + agentData.grounded.ToString();
-
-        if (agentData.discreteActions[3] == 1)
-        {
-            Debug.DrawLine(target.transform.position, agentData.ball.position, Color.red, 0.1f);
-        }
     }
 }
 
