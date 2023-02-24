@@ -1,18 +1,16 @@
-# 🏐 Ultimate Volleyball
+# INF581 Project - Reinforcement Learning Volleyball
 
 ![Ultimate Volleyball](https://www.gocoder.one/static/ultimate-volleyball-eb08a31356cf6a5add9ad2b3ec76cfc6.gif)
 
-## About
-**Ultimate Volleyball** is a multi-agent reinforcement learning environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents).
 
-See ['Ultimate Volleyball Micro-Machine Learning Course'](https://joooyz.gumroad.com/l/ultimate-volleyball) for an updated step-by-step micro-course. 
+This ongoing project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. In this environment, two agents play volleyball over a net. We have two goals in our project :
 
-> **Version:** Up-to-date with ML-Agents Release 19
+1. Improve the existing environment using reward engineering to increase training speed.
+2. Develop and compare several methods to implement 2v2 volleyball games.
  
 ## Contents
 1. [Getting started](#getting-started)
 1. [Training](#training)
-1. [Self-play](#self-play)
 1. [Environment description](#environment-description)
 1. [Baselines](#baselines)
 
@@ -35,13 +33,6 @@ See ['Ultimate Volleyball Micro-Machine Learning Course'](https://joooyz.gumroad
 
 For more detailed instructions, check the [ML-Agents getting started guide](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Getting-Started.md).
 
-## Self-Play
-To enable self-play:
-1. Set either Purple or Blue Agent Team ID to 1.
-![Set Team ID](https://uploads-ssl.webflow.com/5ed1e873ef82ae197179be22/6131cc22959cd47d4b359382_selfplay.jpg)
-2. Include the self-play hyperparameter hierarchy in your trainer config file, or use the provided file in `config/Volleyball_SelfPlay.yaml` ([ML-Agents Documentation](https://github.com/Unity-Technologies/ml-agents/blob/main/docs/Learning-Environment-Design-Agents.md#teams-for-adversarial-scenarios))
-3. Set your reward function in `ResolveEvent()` in `VolleyballEnvController.cs`.
-
 ## Environment Description
 **Goal:** Get the ball to bounce in the opponent's side of the court while preventing the ball bouncing into your own court.
 
@@ -49,9 +40,11 @@ To enable self-play:
 
 4 discrete action branches:
 - Forward motion (3 possible actions: forward, backward, no action)
-- Rotation (3 possible actions: rotate left, rotate right, no action)
 - Side motion (3 possible actions: left, right, no action)
 - Jump (2 possible actions: jump, no action)
+- Touch (2 possible actions:touch, no action)
+
+Action touch will either do a smash if the agent has jumped or a set if the agent is on the ground.
 
 **Observation space:**
 
@@ -66,9 +59,17 @@ Total size: 11
 
 The project contains some examples of how the reward function can be defined.
 The base example gives a +1 reward each time the agent hits the ball over the net.
+Accordingly to our first objective, we worked to develop a more complex reward function that would increase training speed. Please read our report to know more about it.
 
 ## Baselines
 The following baselines are included:
+
+### 1v1
 - `Volleyball_Random.onnx` - Random agent
 - `Volleyball_SelfPlay.onnx` - Trained using PPO with Self-Play in 60M steps
 - `Volleyball.onnx` - Trained using PPO in 60M steps (without Self-Play)
+- `VB_3.onnx` - Agent trained with our new reward function 
+
+### 2v2
+- `Hitter.onnx` - Agent trained to specialize in smashing 
+- `Setter.onnx`- Agent trained to specialize in defense and set
