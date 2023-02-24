@@ -64,11 +64,11 @@ Accordingly to our first objective, we worked to develop a more complex reward f
 ## Baselines
 The following baselines are included:
 
-### 1v1 
+### 1v1 (Do not use them in this branch, go to main branch tro try 1v1)
 - `Volleyball_Random.onnx` - Random agent
 - `Volleyball_SelfPlay.onnx` - Trained using PPO with Self-Play in 60M steps
 - `Volleyball.onnx` - Trained using PPO in 60M steps (without Self-Play)
-- `VB_3.onnx` - Agent trained with our new reward function 
+- `trained_1v1.onnx` - Agent trained with our new reward function
 
 ### 2v2
 - `Hitter.onnx` - Agent trained to specialize in smashing 
