@@ -523,7 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 12
+    VectorObservationSize: 9
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -532,7 +532,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: fc3bc5e2cb3c849e9bd9d784281e9de3, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
   m_BehaviorName: Volleyball
@@ -732,7 +732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 12
+    VectorObservationSize: 9
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -741,7 +741,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: fc3bc5e2cb3c849e9bd9d784281e9de3, type: 3}
   m_InferenceDevice: 3
   m_BehaviorType: 0
   m_BehaviorName: Volleyball
@@ -937,6 +937,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7954672815519958407}
     m_Modifications:
+    - target: {fileID: 4304447863645862838, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5147763190844718465, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8576409450398573086, guid: c1d04c017b1be1644ad85fef77194f29, type: 3}
       propertyPath: m_Size.z
       value: 10

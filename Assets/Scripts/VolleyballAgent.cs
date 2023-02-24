@@ -211,11 +211,6 @@ public class VolleyballAgent : Agent
 
         sensor.AddObservation(ballPos);
 
-        // Agent velocity (3 floats)
-        sensor.AddObservation(agentRb.velocity.y);
-        sensor.AddObservation(agentRb.velocity.z * agentRot);
-        sensor.AddObservation(agentRb.velocity.x * agentRot);
-
         // Ball velocity (3 floats)
         sensor.AddObservation(ballRb.velocity.y);
         sensor.AddObservation(ballRb.velocity.z * agentRot);
