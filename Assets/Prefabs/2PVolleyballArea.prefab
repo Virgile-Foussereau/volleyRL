@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 12
+    VectorObservationSize: 16
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -271,6 +271,7 @@ MonoBehaviour:
   MaxStep: 0
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 7954672815851726371}
+  enemyHitter: {fileID: 5501864745727209264}
   teamId: 0
   roleId: 1
   ball: {fileID: 1317026924745720295}
@@ -691,7 +692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 12
+    VectorObservationSize: 16
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -727,6 +728,7 @@ MonoBehaviour:
   MaxStep: 0
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 6931804249805757513}
+  enemyHitter: {fileID: 7954672815851726371}
   teamId: 1
   roleId: 0
   ball: {fileID: 1317026924745720295}
@@ -856,7 +858,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 12
+    VectorObservationSize: 16
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -892,6 +894,7 @@ MonoBehaviour:
   MaxStep: 0
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 5501864745727209264}
+  enemyHitter: {fileID: 7954672815851726371}
   teamId: 1
   roleId: 1
   ball: {fileID: 1317026924745720295}
@@ -1085,7 +1088,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 12
+    VectorObservationSize: 16
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -1121,6 +1124,7 @@ MonoBehaviour:
   MaxStep: 0
   area: {fileID: 7954672815519958404}
   teamMate: {fileID: 3382155554176046884}
+  enemyHitter: {fileID: 5501864745727209264}
   teamId: 0
   roleId: 0
   ball: {fileID: 1317026924745720295}

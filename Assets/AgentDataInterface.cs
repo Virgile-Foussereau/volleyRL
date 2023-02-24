@@ -21,6 +21,8 @@ public class AgentDataInterface : MonoBehaviour
         agentData.reward = agent.GetCumulativeReward();
         agentData.role = agent.roleId;
         agentData.name = agent.name;
+        agentData.ball = agent.ball.transform;
+        agentData.grounded = agent.CheckIfGrounded();
         return agentData;
     }
 }
@@ -34,4 +36,7 @@ public struct AgentDataStruct
     public Role lastRole;
     public Role role;
     public float reward;
+
+    public Transform ball;
+    public bool grounded;
 }
