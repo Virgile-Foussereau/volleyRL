@@ -16,7 +16,8 @@ public enum Role
     Default = 2
 }
 
-public enum Touch {
+public enum Touch
+{
 
     Set = 0,
     Smash = 1,
@@ -170,7 +171,7 @@ public class VolleyballEnvController : MonoBehaviour
                     }
 
                     // turn floor purple
-                     StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
+                    StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
 
                 }
                 else if (lastHitter == Team.Purple)
@@ -228,7 +229,8 @@ public class VolleyballEnvController : MonoBehaviour
                     float malus_purple = -1f + Mathf.Exp(-0.5f * distToBall_purple);
                     purpleAgent1.AddReward(malus_purple);
                 }
-                else {
+                else
+                {
                     float distToBall_purple = (ballRb.transform.position - purpleAgentRb2.transform.position).magnitude;
                     float malus_purple = -1f + Mathf.Exp(-0.5f * distToBall_purple);
                     purpleAgent2.AddReward(malus_purple);
@@ -263,7 +265,8 @@ public class VolleyballEnvController : MonoBehaviour
                     float malus_blue = -1f + Mathf.Exp(-0.5f * distToBall_blue);
                     blueAgent1.AddReward(malus_blue);
                 }
-                else {
+                else
+                {
                     float distToBall_blue = (ballRb.transform.position - blueAgentRb2.transform.position).magnitude;
                     float malus_blue = -1f + Mathf.Exp(-0.5f * distToBall_blue);
                     blueAgent2.AddReward(malus_blue);

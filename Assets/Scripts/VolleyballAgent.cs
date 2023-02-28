@@ -3,6 +3,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
+using System.Collections.Generic;
 
 public class VolleyballAgent : Agent
 {
@@ -38,9 +39,14 @@ public class VolleyballAgent : Agent
     EnvironmentParameters resetParams;
 
     int[] lastActions;
+
+    private VolleyballHeuristic heuristic;
+    private Dictionary<ObservationTypes, float> observationsForHeuristic = new Dictionary<ObservationTypes, float>();
     void Start()
     {
-        envController = area.GetComponent<VolleyballEnvController>();
+        heuristic = new TwoVersusTwoBaseline();
+        if (area != null)
+            envController = area.GetComponent<VolleyballEnvController>();
     }
 
     public override void Initialize()
@@ -48,12 +54,13 @@ public class VolleyballAgent : Agent
         volleyballSettings = FindObjectOfType<VolleyballSettings>();
         behaviorParameters = GetComponent<BehaviorParameters>();
 
-
         agentRb = GetComponent<Rigidbody>();
-        teamMateRb = teamMate.GetComponent<Rigidbody>();
+        if (teamMate != null)
+            teamMateRb = teamMate.GetComponent<Rigidbody>();
         ballRb = ball.GetComponent<Rigidbody>();
 
-        netPos = net.transform.position;
+        if (net != null)
+            netPos = net.transform.position;
 
         // for symmetry between player side
         if (teamId == Team.Blue)
@@ -195,9 +202,9 @@ public class VolleyballAgent : Agent
         else if (dirToGoForwardAction == 2)
             dirToGo += (grounded ? 1f : 0.5f) * Vector3.forward * -1f;
         if (dirToGoSideAction == 1)
-            dirToGo += (grounded ? 1f : 0.5f) * Vector3.right * -1f;
-        else if (dirToGoSideAction == 2)
             dirToGo += (grounded ? 1f : 0.5f) * Vector3.right;
+        else if (dirToGoSideAction == 2)
+            dirToGo += (grounded ? 1f : 0.5f) * Vector3.right * -1f;
 
 
         dirToGo = agentRot * dirToGo.normalized;
@@ -208,8 +215,7 @@ public class VolleyballAgent : Agent
                 Jump();
             }
 
-        agentRb.AddForce(dirToGo * volleyballSettings.agentRunSpeed,
-            ForceMode.VelocityChange);
+        agentRb.velocity = new Vector3(dirToGo.x, 0, dirToGo.z).normalized * volleyballSettings.agentRunSpeed + new Vector3(0, agentRb.velocity.y, 0);
 
         // Rotate the agent towards the direction it is moving
         if (dirToGo.magnitude != 0f)
@@ -262,16 +268,21 @@ public class VolleyballAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-
+        observationsForHeuristic.Clear();
         // vector to ball (vector3)  
         Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x) * agentRot,
         (ballRb.transform.position.y - this.transform.position.y),
         (ballRb.transform.position.z - this.transform.position.z) * agentRot);
 
         sensor.AddObservation(toBall.normalized);
+        observationsForHeuristic.Add(ObservationTypes.BALL_DIRECTION_X, toBall.normalized.x);
+        observationsForHeuristic.Add(ObservationTypes.BALL_DIRECTION_Y, toBall.normalized.y);
+        observationsForHeuristic.Add(ObservationTypes.BALL_DIRECTION_Z, toBall.normalized.z);
+
 
         // Distance to ball (float)
         sensor.AddObservation(toBall.magnitude);
+        observationsForHeuristic.Add(ObservationTypes.BALL_DISTANCE, toBall.magnitude);
 
         // vector to teammate (vector3)
         Vector3 toTeamMate = new Vector3((teamMateRb.transform.position.x - this.transform.position.x) * agentRot,
@@ -279,15 +290,21 @@ public class VolleyballAgent : Agent
         (teamMateRb.transform.position.z - this.transform.position.z) * agentRot);
 
         sensor.AddObservation(toTeamMate.normalized);
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DIRECTION_X, toTeamMate.normalized.x);
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DIRECTION_Y, toTeamMate.normalized.y);
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DIRECTION_Z, toTeamMate.normalized.z);
 
         // Distance to teammate (float)
         sensor.AddObservation(toTeamMate.magnitude);
-
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DISTANCE, toTeamMate.magnitude);
 
         // Ball velocity (3 floats)
         sensor.AddObservation(ballRb.velocity.y);
         sensor.AddObservation(ballRb.velocity.z * agentRot);
         sensor.AddObservation(ballRb.velocity.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_Y, ballRb.velocity.y);
+        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_Z, ballRb.velocity.z);
+        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_X, ballRb.velocity.x);
 
         // last player touch (int)
         Team lastHitter = envController.GetLastHitter();
@@ -307,12 +324,17 @@ public class VolleyballAgent : Agent
         {
             sensor.AddObservation(2);
         }
+        observationsForHeuristic.Add(ObservationTypes.LAST_HITTER_TEAM, (float)lastHitter);
+        observationsForHeuristic.Add(ObservationTypes.LAST_HITTER_ROLE, (float)lastRole);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_TEAM, (float)teamId);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_ROLE, (float)roleId);
+
     }
 
     // For human controller
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        var discreteActionsOut = actionsOut.DiscreteActions;
+        /*var discreteActionsOut = actionsOut.DiscreteActions;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             // forward
@@ -333,7 +355,15 @@ public class VolleyballAgent : Agent
             // move right
             discreteActionsOut[1] = 2;
         }
-        discreteActionsOut[2] = Input.GetKey(KeyCode.Space) ? 1 : 0;
+        discreteActionsOut[2] = Input.GetKey(KeyCode.Space) ? 1 : 0;*/
+        Dictionary<ActionTypes, int> actions = heuristic.MakeDecisions(observationsForHeuristic, volleyballSettings);
+        var discreteActionsOut = actionsOut.DiscreteActions;
+        discreteActionsOut[0] = actions[ActionTypes.Z_MOVEMENT];
+        discreteActionsOut[1] = actions[ActionTypes.X_MOVEMENT];
+        discreteActionsOut[2] = actions[ActionTypes.JUMP];
+        discreteActionsOut[3] = actions[ActionTypes.TOUCH];
+
+
     }
 
     public int[] GetLastActions()
