@@ -24,15 +24,13 @@ public class TwoVTwoBaselineTest : MonoBehaviour
     Dictionary<ObservationTypes, float> MakeObservations()
     {
         Dictionary<ObservationTypes, float> observations = new Dictionary<ObservationTypes, float>();
-        Vector3 ballDirection = ball.transform.position - transform.position;
-        observations.Add(ObservationTypes.BALL_DIRECTION_X, ballDirection.normalized.x);
-        observations.Add(ObservationTypes.BALL_DIRECTION_Y, ballDirection.normalized.y);
-        observations.Add(ObservationTypes.BALL_DIRECTION_Z, ballDirection.normalized.z);
-        observations.Add(ObservationTypes.BALL_DISTANCE, ballDirection.magnitude);
-        observations.Add(ObservationTypes.TEAMMATE_DIRECTION_X, 0);
-        observations.Add(ObservationTypes.TEAMMATE_DIRECTION_Y, 0);
-        observations.Add(ObservationTypes.TEAMMATE_DIRECTION_Z, 0);
-        observations.Add(ObservationTypes.TEAMMATE_DISTANCE, 0);
+        Vector3 ballPosition = ball.transform.position;
+        observations.Add(ObservationTypes.BALL_POSITION_X, ballPosition.x);
+        observations.Add(ObservationTypes.BALL_POSITION_Y, ballPosition.y);
+        observations.Add(ObservationTypes.BALL_POSITION_Z, ballPosition.z);
+        observations.Add(ObservationTypes.TEAMMATE_POSITION_X, 0);
+        observations.Add(ObservationTypes.TEAMMATE_POSITION_Y, 0);
+        observations.Add(ObservationTypes.TEAMMATE_POSITION_Z, 0);
         observations.Add(ObservationTypes.BALL_VELOCITY_X, ball.velocity.x);
         observations.Add(ObservationTypes.BALL_VELOCITY_Y, ball.velocity.y);
         observations.Add(ObservationTypes.BALL_VELOCITY_Z, ball.velocity.z);
@@ -40,16 +38,21 @@ public class TwoVTwoBaselineTest : MonoBehaviour
         observations.Add(ObservationTypes.LAST_HITTER_ROLE, 0);
         observations.Add(ObservationTypes.PLAYER_TEAM, 0);
         observations.Add(ObservationTypes.PLAYER_ROLE, (int)role);
-        observations.Add(ObservationTypes.PLAYER_POSITION_X, transform.position.x);
-        observations.Add(ObservationTypes.PLAYER_POSITION_Y, transform.position.y);
-        observations.Add(ObservationTypes.PLAYER_POSITION_Z, transform.position.z);
+        observations.Add(ObservationTypes.PLAYER_POSITION_X, GetComponent<Rigidbody>().position.x);
+        observations.Add(ObservationTypes.PLAYER_POSITION_Y, GetComponent<Rigidbody>().position.y);
+        observations.Add(ObservationTypes.PLAYER_POSITION_Z, GetComponent<Rigidbody>().position.z);
+        observations.Add(ObservationTypes.PLAYER_VELOCITY_X, GetComponent<Rigidbody>().velocity.x);
+        observations.Add(ObservationTypes.PLAYER_VELOCITY_Y, GetComponent<Rigidbody>().velocity.y);
+        observations.Add(ObservationTypes.PLAYER_VELOCITY_Z, GetComponent<Rigidbody>().velocity.z);
+        observations.Add(ObservationTypes.PLAYER_MASS, GetComponent<Rigidbody>().mass);
+        observations.Add(ObservationTypes.PLAYER_DRAG, GetComponent<Rigidbody>().drag);
         return observations;
 
     }
     void Set()
     {
         //calculate vector from agent to ball
-        Vector3 agentToBall = ball.position - transform.position;
+        Vector3 agentToBall = ball.position - GetComponent<Rigidbody>().position;
 
         if (agentToBall.magnitude < settings.agentRange)
         {
@@ -76,7 +79,7 @@ public class TwoVTwoBaselineTest : MonoBehaviour
         {
             controlSignal.z = -1;
         }
-        agentRb.velocity = controlSignal * settings.agentRunSpeed;
+        agentRb.AddForce(controlSignal * settings.agentRunSpeed, ForceMode.VelocityChange);
         if (actions[ActionTypes.TOUCH] == 1)
         {
             Set();
@@ -84,22 +87,23 @@ public class TwoVTwoBaselineTest : MonoBehaviour
 
     }
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Dictionary<ObservationTypes, float> observations = MakeObservations();
         Dictionary<ActionTypes, int> actions = baseline.MakeDecisions(observations, settings);
         if (actions.Count > 0)
             MoveAgent(actions);
 
-        baseline.aimTarget = target.position - transform.position;
-        //(Vector3, float) moveTarget = baseline.CalculateBestMoveTarget(ball.position - transform.position, ball.velocity, target.position - transform.position, settings);
+        baseline.aimTarget = target.position;
+        /*baseline.SetObservations(observations);
 
-        //transform.position = moveTarget.Item1 + transform.position;
+        (Vector3, float) moveTarget = baseline.CalculateBestMoveTarget(ball.position, ball.velocity, target.position, settings);
 
-        //if (ball.position.y - transform.position.y <= moveTarget.Item2)
-        //{
-        //    Set();
-        //}
+        transform.position = moveTarget.Item1;
 
+        if (Mathf.Abs(ball.position.y - moveTarget.Item2) <= Mathf.Abs(ball.position.y - Time.fixedDeltaTime * ball.velocity.y))
+        {
+            Set();
+        }*/
     }
 }

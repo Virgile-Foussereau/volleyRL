@@ -215,8 +215,7 @@ public class VolleyballAgent : Agent
                 Jump();
             }
 
-        agentRb.velocity = new Vector3(dirToGo.x, 0, dirToGo.z).normalized * volleyballSettings.agentRunSpeed + new Vector3(0, agentRb.velocity.y, 0);
-
+        agentRb.AddForce(dirToGo * volleyballSettings.agentRunSpeed, ForceMode.VelocityChange);
         // Rotate the agent towards the direction it is moving
         if (dirToGo.magnitude != 0f)
         {
@@ -266,8 +265,42 @@ public class VolleyballAgent : Agent
         lastActions = actionBuffers.DiscreteActions.Array;
     }
 
+    private void MakeHeuristicObservations()
+    {
+        observationsForHeuristic.Clear();
+        observationsForHeuristic.Add(ObservationTypes.BALL_POSITION_X, ballRb.position.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.BALL_POSITION_Y, ballRb.position.y);
+        observationsForHeuristic.Add(ObservationTypes.BALL_POSITION_Z, ballRb.position.z * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_POSITION_X, teamMateRb.position.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_POSITION_Y, teamMateRb.position.y);
+        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_POSITION_Z, teamMateRb.position.z * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_POSITION_X, this.transform.position.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_POSITION_Y, this.transform.position.y);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_POSITION_Z, this.transform.position.z * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_X, ballRb.velocity.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_Y, ballRb.velocity.y);
+        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_Z, ballRb.velocity.z * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_MASS, agentRb.mass);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_DRAG, agentRb.drag);
+        observationsForHeuristic.Add(ObservationTypes.LAST_HITTER_ROLE, (float)envController.GetLastRole());
+        observationsForHeuristic.Add(ObservationTypes.LAST_HITTER_TEAM, (float)envController.GetLastHitter());
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_ROLE, (float)roleId);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_TEAM, (float)teamId);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_VELOCITY_X, agentRb.velocity.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_VELOCITY_Y, agentRb.velocity.y);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_VELOCITY_Z, agentRb.velocity.z * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.NET_POSITION_X, netPos.x * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.NET_POSITION_Y, netPos.y);
+        observationsForHeuristic.Add(ObservationTypes.NET_POSITION_Z, netPos.z * agentRot);
+        observationsForHeuristic.Add(ObservationTypes.PLAYER_GROUNDED, CheckIfGrounded() ? 1f : 0f);
+
+
+
+    }
+
     public override void CollectObservations(VectorSensor sensor)
     {
+
         observationsForHeuristic.Clear();
         // vector to ball (vector3)  
         Vector3 toBall = new Vector3((ballRb.transform.position.x - this.transform.position.x) * agentRot,
@@ -275,37 +308,22 @@ public class VolleyballAgent : Agent
         (ballRb.transform.position.z - this.transform.position.z) * agentRot);
 
         sensor.AddObservation(toBall.normalized);
-        observationsForHeuristic.Add(ObservationTypes.BALL_DIRECTION_X, toBall.normalized.x);
-        observationsForHeuristic.Add(ObservationTypes.BALL_DIRECTION_Y, toBall.normalized.y);
-        observationsForHeuristic.Add(ObservationTypes.BALL_DIRECTION_Z, toBall.normalized.z);
-
 
         // Distance to ball (float)
         sensor.AddObservation(toBall.magnitude);
-        observationsForHeuristic.Add(ObservationTypes.BALL_DISTANCE, toBall.magnitude);
-
         // vector to teammate (vector3)
         Vector3 toTeamMate = new Vector3((teamMateRb.transform.position.x - this.transform.position.x) * agentRot,
         (teamMateRb.transform.position.y - this.transform.position.y),
         (teamMateRb.transform.position.z - this.transform.position.z) * agentRot);
 
         sensor.AddObservation(toTeamMate.normalized);
-        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DIRECTION_X, toTeamMate.normalized.x);
-        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DIRECTION_Y, toTeamMate.normalized.y);
-        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DIRECTION_Z, toTeamMate.normalized.z);
-
         // Distance to teammate (float)
         sensor.AddObservation(toTeamMate.magnitude);
-        observationsForHeuristic.Add(ObservationTypes.TEAMMATE_DISTANCE, toTeamMate.magnitude);
 
         // Ball velocity (3 floats)
         sensor.AddObservation(ballRb.velocity.y);
         sensor.AddObservation(ballRb.velocity.z * agentRot);
         sensor.AddObservation(ballRb.velocity.x * agentRot);
-        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_Y, ballRb.velocity.y);
-        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_Z, ballRb.velocity.z);
-        observationsForHeuristic.Add(ObservationTypes.BALL_VELOCITY_X, ballRb.velocity.x);
-
         // last player touch (int)
         Team lastHitter = envController.GetLastHitter();
         Role lastRole = envController.GetLastRole();
@@ -324,10 +342,6 @@ public class VolleyballAgent : Agent
         {
             sensor.AddObservation(2);
         }
-        observationsForHeuristic.Add(ObservationTypes.LAST_HITTER_TEAM, (float)lastHitter);
-        observationsForHeuristic.Add(ObservationTypes.LAST_HITTER_ROLE, (float)lastRole);
-        observationsForHeuristic.Add(ObservationTypes.PLAYER_TEAM, (float)teamId);
-        observationsForHeuristic.Add(ObservationTypes.PLAYER_ROLE, (float)roleId);
 
     }
 
@@ -356,13 +370,13 @@ public class VolleyballAgent : Agent
             discreteActionsOut[1] = 2;
         }
         discreteActionsOut[2] = Input.GetKey(KeyCode.Space) ? 1 : 0;*/
+        MakeHeuristicObservations();
         Dictionary<ActionTypes, int> actions = heuristic.MakeDecisions(observationsForHeuristic, volleyballSettings);
         var discreteActionsOut = actionsOut.DiscreteActions;
         discreteActionsOut[0] = actions[ActionTypes.Z_MOVEMENT];
         discreteActionsOut[1] = actions[ActionTypes.X_MOVEMENT];
         discreteActionsOut[2] = actions[ActionTypes.JUMP];
         discreteActionsOut[3] = actions[ActionTypes.TOUCH];
-
 
     }
 

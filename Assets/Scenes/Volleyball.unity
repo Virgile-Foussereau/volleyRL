@@ -561,6 +561,14 @@ PrefabInstance:
       propertyPath: m_Drag
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 497495965292054564, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Drag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 497495965292054564, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Mass
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2219554007297188915, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: roleId
       value: 1
@@ -576,6 +584,14 @@ PrefabInstance:
     - target: {fileID: 4910179873981865402, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: DecisionPeriod
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053101268918827267, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Drag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5053101268918827267, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Mass
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7756907178769414777, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_BehaviorType
@@ -633,6 +649,14 @@ PrefabInstance:
       propertyPath: roleId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7954672815851726556, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Drag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954672815851726556, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Mass
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7954672815851726557, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_BehaviorType
       value: 1
@@ -644,6 +668,14 @@ PrefabInstance:
     - target: {fileID: 8241164390451994639, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: DecisionPeriod
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8444306969433979849, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Drag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8444306969433979849, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Mass
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8577167738358868440, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_BehaviorType
@@ -1579,9 +1611,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentRange: 1.5
-  ballTouchSpeed: 30
-  ballSmashSpeed: 50
-  agentRunSpeed: 10
+  ballTouchSpeed: 20
+  ballSmashSpeed: 30
+  agentRunSpeed: 6
   agentJumpHeight: 5
   agentJumpVelocity: 400
   agentJumpVelocityMaxChange: 10

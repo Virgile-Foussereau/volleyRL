@@ -31,10 +31,10 @@ public static class TrajectoryUtility
         theta = thetaNew;
         return (float)theta;
     }
-    public static float FindAimAngle2DDichotomy(float xTarget, float yTarget, float initialVelocity, float g)
+    public static float FindAimAngle2DDichotomy(float xTarget, float yTarget, float initialVelocity, float g, double minAngle = Math.PI / 4, double maxAngle = Math.PI / 2)
     {
-        double theta1 = Math.PI / 4;
-        double theta2 = Math.PI / 2 - 0.001;
+        double theta1 = minAngle;
+        double theta2 = maxAngle;
         while (theta2 - theta1 > 0.001)
         {
             double theta = (theta1 + theta2) / 2;
@@ -47,6 +47,12 @@ public static class TrajectoryUtility
                 theta2 = theta;
             }
         }
+        float refusalThreshold = 0.1f;
+        if (Math.Abs(ZeroFunction(theta1, xTarget, yTarget, initialVelocity, g)) > refusalThreshold && minAngle > 0.001)
+        {
+            return FindAimAngle2D(xTarget, yTarget, initialVelocity, g);
+        }
+
         return (float)theta1;
     }
 
@@ -95,6 +101,10 @@ public static class TrajectoryUtility
             float yInitialSpeed = initialBallSpeed.y;
             return Vector3.up * (initialBallSpeed.y - g * (yInitialSpeed / g + Mathf.Sqrt(Mathf.Pow(yInitialSpeed / g, 2) + 2 * (initialBallPos.y - impactY) / g)));
         }
+    }
+    public static Vector3 PredictPositionInTime(Vector3 initialBallPos, Vector3 initialBallSpeed, float g, float time)
+    {
+        return initialBallPos + initialBallSpeed * time + Vector3.down * g * time * time / 2;
     }
 
     public static Vector3[] CalculateTrajectory(Vector3 initialBallPos, Vector3 initialBallSpeed, float g, int numPoints = 100, float timeStep = 0.1f)
