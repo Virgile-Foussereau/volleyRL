@@ -109,7 +109,7 @@ public class TwoVersusTwoBaseline : VolleyballHeuristic
         Dictionary<ActionTypes, int> actionsOut = new Dictionary<ActionTypes, int>();
         if (lastHitterTeam != playerTeam)
         {
-            Vector3 landPoint = TrajectoryUtility.PredictImpactPoint(ballPosition, ballVelocity, -Physics.gravity.y, 5);
+            Vector3 landPoint = TrajectoryUtility.PredictImpactPoint(ballPosition, ballVelocity, -Physics.gravity.y, 3.35f);
             int agentRot = playerTeam == Team.Purple ? 1 : -1;
             if (landPoint.z <= netPosition.z)
             {
@@ -142,7 +142,7 @@ public class TwoVersusTwoBaseline : VolleyballHeuristic
             }
             else
             {
-                MoveTo(netPosition - Vector3.forward * 8, actionsOut);
+                MoveTo(netPosition - Vector3.forward * 12, actionsOut);
                 actionsOut.Add(ActionTypes.TOUCH, 0);
                 actionsOut.Add(ActionTypes.JUMP, 0);
 
@@ -222,7 +222,7 @@ public class TwoVersusTwoBaseline : VolleyballHeuristic
         {
             actionsOut.Add(ActionTypes.TOUCH, 0);
             actionsOut.Add(ActionTypes.JUMP, 0);
-            MoveTo(setPoint1, actionsOut);
+            MoveTo(setPoint1 + netPosition, actionsOut);
         }
         return actionsOut;
     }
