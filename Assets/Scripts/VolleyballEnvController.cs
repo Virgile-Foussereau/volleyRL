@@ -72,6 +72,8 @@ public class VolleyballEnvController : MonoBehaviour
 
     Touch lastTouch;
 
+    Touch previousTouch;
+
     private int resetTimer;
     public int MaxEnvironmentSteps;
 
@@ -129,6 +131,7 @@ public class VolleyballEnvController : MonoBehaviour
 
     public void UpdateLastTouch(Touch touch)
     {
+        previousTouch = lastTouch;
         lastTouch = touch;
     }
 
@@ -287,7 +290,7 @@ public class VolleyballEnvController : MonoBehaviour
             case Event.HitIntoBlueArea:
                 if (lastHitter == Team.Purple)
                 {
-                    if (lastRole == Role.Hitter && lastTouch == Touch.Smash && previousHitter == Team.Purple && previousRole == Role.Setter)
+                    if (lastRole == Role.Hitter && lastTouch == Touch.Smash && previousHitter == Team.Purple && previousRole == Role.Setter && previousTouch == Touch.Set)
                     {
                         purpleAgent1.AddReward(1f);
                         purpleAgent2.AddReward(1f);
@@ -298,7 +301,7 @@ public class VolleyballEnvController : MonoBehaviour
             case Event.HitIntoPurpleArea:
                 if (lastHitter == Team.Blue)
                 {
-                    if (lastRole == Role.Hitter && lastTouch == Touch.Smash && previousHitter == Team.Blue && previousRole == Role.Setter)
+                    if (lastRole == Role.Hitter && lastTouch == Touch.Smash && previousHitter == Team.Blue && previousRole == Role.Setter && previousTouch == Touch.Set)
                     {
                         blueAgent1.AddReward(1f);
                         blueAgent2.AddReward(1f);
@@ -358,6 +361,7 @@ public class VolleyballEnvController : MonoBehaviour
         lastTouch = Touch.Default; // reset last touch
         previousHitter = Team.Default; // reset previous hitter
         previousRole = Role.Default; // reset previous role
+        previousTouch = Touch.Default; // reset previous touch
 
         foreach (var agent in AgentsList)
         {

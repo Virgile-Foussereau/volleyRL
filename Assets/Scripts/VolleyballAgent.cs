@@ -115,7 +115,7 @@ public class VolleyballAgent : Agent
         if (agentToBall.magnitude < volleyballSettings.agentRange)
         {
             if (envController.GetLastHitter() == teamId &&
-                envController.GetLastRole() == Role.Setter && roleId == Role.Hitter)
+                envController.GetLastRole() == Role.Setter && envController.GetLastTouch() == Touch.Set && roleId == Role.Hitter)
             {
                 // add reward to teamMate
                 teamMate.GetComponent<VolleyballAgent>().AddReward(0.5f);
@@ -177,7 +177,7 @@ public class VolleyballAgent : Agent
     {
         if (roleId == Role.Setter)
         {
-            AddReward(-0.1f);
+            AddReward(-1f);
         }
         jumpingTime = 0.2f;
         jumpStartingPos = agentRb.position;
@@ -321,9 +321,15 @@ public class VolleyballAgent : Agent
         sensor.AddObservation(toTeamMate.magnitude);
 
         // Ball velocity (3 floats)
+        sensor.AddObservation(ballRb.velocity.x * agentRot);
         sensor.AddObservation(ballRb.velocity.y);
         sensor.AddObservation(ballRb.velocity.z * agentRot);
-        sensor.AddObservation(ballRb.velocity.x * agentRot);
+        
+        // Player velocity (3 floats)
+        sensor.AddObservation(agentRb.velocity.x * agentRot);
+        sensor.AddObservation(agentRb.velocity.y);
+        sensor.AddObservation(agentRb.velocity.z * agentRot);
+
         // last player touch (int)
         Team lastHitter = envController.GetLastHitter();
         Role lastRole = envController.GetLastRole();
