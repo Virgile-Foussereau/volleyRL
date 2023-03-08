@@ -557,74 +557,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 118543589898679013, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Drag
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 497495965292054564, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Drag
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 497495965292054564, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Mass
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2219554007297188915, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: roleId
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2401782393018484300, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: roleId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2452780973632517420, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_BehaviorType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2649346458898701311, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4225126290462778290, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: DecisionPeriod
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4910179873981865402, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: DecisionPeriod
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5002344052212756053, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 13400000, guid: 0631fc164a846f54fa89d6c27b930692, type: 2}
-    - target: {fileID: 5053101268918827267, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Drag
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5053101268918827267, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Mass
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6327617998853010357, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6548335940184559316, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 13400000, guid: 0631fc164a846f54fa89d6c27b930692, type: 2}
-    - target: {fileID: 6637432484309119461, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7416857712268663273, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7756907178769414777, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_BehaviorType
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_Name
       value: 2PVolleyballArea
@@ -672,42 +604,6 @@ PrefabInstance:
     - target: {fileID: 7954672815519958407, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954672815851726370, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: roleId
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954672815851726556, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Drag
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954672815851726556, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Mass
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954672815851726557, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_BehaviorType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7954672815851726558, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: DecisionPeriod
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8241164390451994639, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: DecisionPeriod
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8444306969433979849, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Drag
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8444306969433979849, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_Mass
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8577167738358868440, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
-      propertyPath: m_BehaviorType
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
@@ -845,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958407, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_RootOrder
@@ -1639,7 +1535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agentRange: 1.5
-  ballTouchSpeed: 30
+  ballTouchSpeed: 20
   ballSmashSpeed: 30
   agentRunSpeed: 3
   agentJumpHeight: 5
