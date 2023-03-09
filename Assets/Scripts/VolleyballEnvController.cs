@@ -77,6 +77,10 @@ public class VolleyballEnvController : MonoBehaviour
     private int resetTimer;
     public int MaxEnvironmentSteps;
 
+    public int blueScore;
+
+    public int purpleScore;
+
     void Start()
     {
 
@@ -100,6 +104,10 @@ public class VolleyballEnvController : MonoBehaviour
         RenderersList.Add(purpleGoalRenderer);
 
         volleyballSettings = FindObjectOfType<VolleyballSettings>();
+
+        // Scoreboard
+        blueScore = 0;
+        purpleScore = 0;
 
         ResetScene();
     }
@@ -175,6 +183,8 @@ public class VolleyballEnvController : MonoBehaviour
 
                     // turn floor purple
                     StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
+                    // Add to scoreboard
+                    purpleScore++;
 
                 }
                 else if (lastHitter == Team.Purple)
@@ -201,6 +211,8 @@ public class VolleyballEnvController : MonoBehaviour
 
                     // turn floor blue
                     StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
+                    // Add to scoreboard
+                    blueScore++;
 
                 }
 
@@ -241,6 +253,8 @@ public class VolleyballEnvController : MonoBehaviour
 
                 // turn floor blue
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.blueGoalMaterial, RenderersList, .5f));
+                // Add to scoreboard
+                blueScore++;
 
                 // end episode
                 blueAgent1.EndEpisode();
@@ -277,6 +291,8 @@ public class VolleyballEnvController : MonoBehaviour
 
                 // turn floor purple
                 StartCoroutine(GoalScoredSwapGroundMaterial(volleyballSettings.purpleGoalMaterial, RenderersList, .5f));
+                // Add to scoreboard
+                purpleScore++;
 
                 // end episode
                 blueAgent1.EndEpisode();
@@ -355,6 +371,9 @@ public class VolleyballEnvController : MonoBehaviour
     public void ResetScene()
     {
         resetTimer = 0;
+
+        // print score
+        //Debug.Log("Blue: " + blueScore + " - Purple: " + purpleScore);
 
         lastHitter = Team.Default; // reset last hitter
         lastRole = Role.Default; // reset last role

@@ -195,8 +195,6 @@ public class VolleyballAgent : Agent
         var jumpAction = act[2];
         var touchAction = act[3];
 
-        //Debug.Log(teamId + " " + transform.forward);
-
         if (dirToGoForwardAction == 1)
             dirToGo += (grounded ? 1f : 0.5f) * Vector3.forward * 1f;
         else if (dirToGoForwardAction == 2)
