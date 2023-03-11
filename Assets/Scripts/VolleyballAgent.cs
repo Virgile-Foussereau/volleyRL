@@ -179,6 +179,18 @@ public class VolleyballAgent : Agent
         {
             AddReward(-1f);
         }
+        if (roleId == Role.Hitter)
+        {
+            if (envController.GetLastHitter() != teamId || envController.GetLastRole() != Role.Setter) 
+            {
+                //stronger malus
+                AddReward(-0.2f);
+            }
+            else
+            {
+                AddReward(-0.1f);
+            }
+        }
         jumpingTime = 0.2f;
         jumpStartingPos = agentRb.position;
     }

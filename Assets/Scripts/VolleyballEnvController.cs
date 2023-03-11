@@ -161,8 +161,6 @@ public class VolleyballEnvController : MonoBehaviour
                 if (lastHitter == Team.Blue)
                 {
                     // apply penalty to blue agent
-                    // blueAgent.AddReward(-0.1f);
-                    // purpleAgent.AddReward(0.1f);
                     //compute angle between ballRb.velocity and the net
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
                     float rmin = 0.3f;
@@ -190,8 +188,6 @@ public class VolleyballEnvController : MonoBehaviour
                 else if (lastHitter == Team.Purple)
                 {
                     // apply penalty to purple agent
-                    // purpleAgent.AddReward(-0.1f);
-                    // blueAgent.AddReward(0.1f);
                     //compute angle between ballRb.velocity and the net
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
                     float rmin = 0.3f;
@@ -227,8 +223,6 @@ public class VolleyballEnvController : MonoBehaviour
 
             case Event.HitBlueGoal:
                 // blue wins
-                // blueAgent.AddReward(1f);
-                // purpleAgent.AddReward(-1f);
                 if (lastHitter == Team.Purple && lastRole == Role.Hitter && lastTouch == Touch.Smash)
                 {
                     Vector3 flatVelocity = new Vector3(ballRb.velocity.x, 0, ballRb.velocity.z);
@@ -266,7 +260,6 @@ public class VolleyballEnvController : MonoBehaviour
 
             case Event.HitPurpleGoal:
                 // purple wins
-                // purpleAgent.AddReward(1f);
                 //malus decrease if agent is closer to the ball
                 if (lastHitter == Team.Blue && lastRole == Role.Hitter && lastTouch == Touch.Smash)
                 {
