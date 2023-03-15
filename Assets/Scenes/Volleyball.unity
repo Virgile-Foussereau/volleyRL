@@ -557,6 +557,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2452780973632517420, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 21edb0ae62931475c89464a60061f107, type: 3}
+    - target: {fileID: 7756907178769414777, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 79ec584ebf56749ec84f068d11977f1c, type: 3}
     - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_Name
       value: 2PVolleyballArea
@@ -605,6 +613,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7954672815851726557, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 79ec584ebf56749ec84f068d11977f1c, type: 3}
+    - target: {fileID: 8577167738358868440, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 5022602860645237092, guid: 21edb0ae62931475c89464a60061f107, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
 --- !u!1 &364838520
@@ -626,7 +642,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &364838521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -735,13 +751,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2452780973632517420, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_BehaviorName
+      value: Setter
+      objectReference: {fileID: 0}
+    - target: {fileID: 7756907178769414777, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_BehaviorName
+      value: Hitter
+      objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_Name
       value: 2PVolleyballArea (1)
       objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958404, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7954672815519958407, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_RootOrder
@@ -786,6 +810,14 @@ PrefabInstance:
     - target: {fileID: 7954672815519958407, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954672815851726557, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_BehaviorName
+      value: Hitter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8577167738358868440, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
+      propertyPath: m_BehaviorName
+      value: Setter
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fed76ada46450914f86122b2893fe1bd, type: 3}
@@ -1077,7 +1109,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &603171376
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1792,7 +1824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1251267043
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1017,6 +1017,8 @@ MonoBehaviour:
   blueGoal: {fileID: 1254629476493177227}
   purpleGoal: {fileID: 5132028400407904075}
   MaxEnvironmentSteps: 5000
+  blueScore: 0
+  purpleScore: 0
 --- !u!1 &7954672815851726371
 GameObject:
   m_ObjectHideFlags: 0
