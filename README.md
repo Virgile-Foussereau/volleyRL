@@ -9,7 +9,7 @@ This ongoing project is based on the ultimate volleyball environment built on [U
 2. Develop and compare several methods to implement 2v2 volleyball games.
 
 This branch contains the code corresponding to the 1v1 case.
-To access the code for 2v2 case, please go to [this branch](https://github.com/Virgile-Foussereau/volleyRL/tree/passAndSmash).
+To access the code for 2v2 case, please go to [this branch](https://github.com/Virgile-Foussereau/volleyRL/tree/2v2baseline).
  
 ## Contents
 1. [Getting started](#getting-started)
