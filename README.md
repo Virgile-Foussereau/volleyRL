@@ -49,7 +49,7 @@ For more detailed instructions, check the [ML-Agents getting started guide](http
 - Jump (2 possible actions: jump, no action)
 - Touch (2 possible actions:touch, no action)
 
-Action touch will either do a smash if the agent has jumped or a set if the agent is on the ground.
+Action touch will either do a spike if the agent has jumped or a set if the agent is on the ground.
 
 **Observation space:**
 
@@ -72,11 +72,11 @@ Accordingly to our first objective, we worked to develop a more complex reward f
 Trained models are available to be used directly. To use them on a team, set each of the player behavior type to `Default` and the model you want in the `Model` parameter in unity. Use a Hitter model for player 1 and Setter model for player 2. The following teams are included:
 
 ### Main RL team
-- `Hitter_RL.onnx` - Agent trained to specialize in smashing 
+- `Hitter_RL.onnx` - Agent trained to specialize in spiking 
 - `Setter_RL.onnx`- Agent trained to specialize in defense and set
 
 ### RL team trained without jump penalty (for comparison purpose)
-- `Hitter_RL_without_jump_penalty.onnx` - Agent trained to specialize in smashing, without jump penalty 
+- `Hitter_RL_without_jump_penalty.onnx` - Agent trained to specialize in spiking, without jump penalty 
 - `Setter_RL_without_jump_penalty.onnx`- Agent trained to specialize in defense and set, without jump penalty for the hitter
 
 ### Hard-coded baseline
@@ -90,5 +90,5 @@ To use the hard-coded baseline, set the behavior type to `Heuristic only` for ea
 
 ![Ultimate Volleyball](https://i.imgur.com/fHRSvtO.gif)
 
-<sub><sup>*A long rally of smashes in one of our RL vs RL games*</sup></sub>
+<sub><sup>*A long rally of spikes in one of our RL vs RL games*</sup></sub>
 
