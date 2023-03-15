@@ -1,8 +1,8 @@
 # INF581 Project - Reinforcement Learning Volleyball 2v2 competitive set-up
 
-![Ultimate Volleyball](https://i.imgur.com/fHRSvtO.gif)
+![Ultimate Volleyball](https://i.imgur.com/aMOJdKU.gif)
 
-<sub><sup>*A long rally of smashes between two teams using our RL models*</sup></sub>
+<sub><sup>*Baseline (purple) vs RL (blue)*</sup></sub>
 
 
 This project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. Original code can be found [here](https://github.com/CoderOneHQ/ultimate-volleyball). In this environment, two agents play volleyball over a net. We have two goals in our project :
@@ -81,3 +81,14 @@ Trained models are available to be used directly. To use them on a team, set eac
 
 ### Hard-coded baseline
 To use the hard-coded baseline, set the behavior type to `Heuristic only` for each player of the team.
+
+## Demo
+
+![Ultimate Volleyball](https://i.imgur.com/aMOJdKU.gif)
+
+<sub><sup>*A game between the baseline (purple) and the RL team (blue)*</sup></sub>
+
+![Ultimate Volleyball](https://i.imgur.com/fHRSvtO.gif)
+
+<sub><sup>*A long rally of smashes in one of our RL vs RL games*</sup></sub>
+
