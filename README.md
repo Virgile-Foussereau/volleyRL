@@ -1,12 +1,17 @@
 # INF581 Project - Reinforcement Learning Volleyball 2v2 competitive set-up
 
-![Ultimate Volleyball](https://i.imgur.com/DMFabyK.gif)
+![Ultimate Volleyball](https://i.imgur.com/fHRSvtO.gif)
+
+<sub><sup>*A long rally of smashes between two teams using our RL models*</sup></sub>
 
 
-This ongoing project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. Original code can be found [here](https://github.com/CoderOneHQ/ultimate-volleyball). In this environment, two agents play volleyball over a net. We have two goals in our project :
+This project is based on the ultimate volleyball environment built on [Unity ML-Agents](https://unity.com/products/machine-learning-agents) by Joy Zhang. Original code can be found [here](https://github.com/CoderOneHQ/ultimate-volleyball). In this environment, two agents play volleyball over a net. We have two goals in our project :
 
 1. Improve the existing environment using reward engineering to increase training speed.
 2. Develop and compare several methods to implement 2v2 volleyball games.
+
+This branch contains the code corresponding to the 2v2 case.
+To access the code for 1v1 case, please go to [this branch](https://github.com/Virgile-Foussereau/volleyRL/tree/main).
  
 ## Contents
 1. [Getting started](#getting-started)
@@ -48,12 +53,14 @@ Action touch will either do a smash if the agent has jumped or a set if the agen
 
 **Observation space:**
 
-Total size: 11
-- Agent Y-rotation (1)
+Total size: 15
 - Normalised directional vector from agent to ball (3)
 - Distance from agent to ball (1)
+- Normalised directional vector from agent to team mate (3)
+- Distance from agent to team mate (1)
+- Ball X, Y, Z velocity (3)
 - Agent X, Y, Z velocity (3)
-- Ball X, Y, Z relative velocity (3)
+- Last player to touch the ball (1)
 
 **Reward function:**
 
@@ -61,15 +68,16 @@ The project contains some examples of how the reward function can be defined.
 The base example gives a +1 reward each time the agent hits the ball over the net.
 Accordingly to our first objective, we worked to develop a more complex reward function that would increase training speed. Please read our report to know more about it.
 
-## Baselines
-The following baselines are included:
+## Teams
+Trained models are available to be used directly. To use them on a team, set each of the player behavior type to `Default` and the model you want in the `Model` parameter in unity. Use a Hitter model for player 1 and Setter model for player 2. The following teams are included:
 
-### 1v1 (Do not use them in this branch, go to main branch tro try 1v1)
-- `Volleyball_Random.onnx` - Random agent
-- `Volleyball_SelfPlay.onnx` - Trained using PPO with Self-Play in 60M steps
-- `Volleyball.onnx` - Trained using PPO in 60M steps (without Self-Play)
-- `trained_1v1.onnx` - Agent trained with our new reward function
+### Main RL team
+- `Hitter_RL.onnx` - Agent trained to specialize in smashing 
+- `Setter_RL.onnx`- Agent trained to specialize in defense and set
 
-### 2v2
-- `Hitter.onnx` - Agent trained to specialize in smashing 
-- `Setter.onnx`- Agent trained to specialize in defense and set
+### RL team trained without jump penalty (for comparison purpose)
+- `Hitter_RL_without_jump_penalty.onnx` - Agent trained to specialize in smashing, without jump penalty 
+- `Setter_RL_without_jump_penalty.onnx`- Agent trained to specialize in defense and set, without jump penalty for the hitter
+
+### Hard-coded baseline
+To use the hard-coded baseline, set the behavior type to `Heuristic only` for each player of the team.
