@@ -10,6 +10,7 @@ This project is based on the ultimate volleyball environment built on [Unity ML-
 1. Improve the existing environment using reward engineering to increase training speed.
 2. Develop and compare several methods to implement 2v2 volleyball games.
 
+Please read our [report](INF581__Final_Report__Volleyball.pdf) for more information on the projet.
 This branch contains the code corresponding to the 2v2 case.
 To access the code for 1v1 case, please go to [this branch](https://github.com/Virgile-Foussereau/volleyRL/tree/main).
  
@@ -66,7 +67,7 @@ Total size: 15
 
 The project contains some examples of how the reward function can be defined.
 The base example gives a +1 reward each time the agent hits the ball over the net.
-Accordingly to our first objective, we worked to develop a more complex reward function that would increase training speed. Please read our report to know more about it.
+Accordingly to our first objective, we worked to develop a more complex reward function that would increase training speed. Read our [report](INF581__Final_Report__Volleyball.pdf) to know more about it.
 
 ## Teams
 Trained models are available to be used directly. To use them on a team, set each of the player behavior type to `Default` and the model you want in the `Model` parameter in unity. Use a Hitter model for player 1 and Setter model for player 2. The following teams are included:
