@@ -229,7 +229,7 @@ public class VolleyballAgent : Agent
         // Rotate the agent towards the direction it is moving
         if (dirToGo.magnitude != 0f)
         {
-            agentRb.transform.rotation = Quaternion.LookRotation(dirToGo);
+            agentRb.transform.rotation = Quaternion.LookRotation(Vector3.forward * agentRot);
         }
 
 
